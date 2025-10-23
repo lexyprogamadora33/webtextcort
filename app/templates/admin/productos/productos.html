@@ -1,0 +1,734 @@
+{% extends "base.html" %}
+{% block title %}Gestión de Productos - RopaStore{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+  <!-- ENCABEZADO MEJORADO -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+        <div class="mb-3 mb-md-0">
+          <h1 class="h2 fw-bold text-dark mb-2">
+            <i class="bi bi-bag-check text-primary me-2"></i>Gestión de Productos
+          </h1>
+          <p class="text-muted mb-0">Administra el inventario y catálogo de productos</p>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-primary rounded-3 px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalCategorias">
+            <i class="bi bi-tags me-2"></i>Categorías
+          </button>
+          
+          <a href="{{ url_for('admin.nuevo_producto') }}" class="btn btn-success rounded-3 px-4 py-2">
+            <i class="bi bi-plus-circle me-2"></i>Nuevo Producto
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESTADÍSTICAS RÁPIDAS -->
+  <div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 bg-gradient-primary text-white rounded-4 shadow-sm">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="fw-bold mb-1">{{ total_productos }}</h3>
+              <p class="mb-0 opacity-75">Total Productos</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-3 p-3">
+              <i class="bi bi-box display-6"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 bg-gradient-success text-white rounded-4 shadow-sm">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="fw-bold mb-1">{{ productos_destacados }}</h3>
+              <p class="mb-0 opacity-75">Destacados</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-3 p-3">
+              <i class="bi bi-star display-6"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 bg-gradient-warning text-white rounded-4 shadow-sm">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="fw-bold mb-1">{{ stock_bajo }}</h3>
+              <p class="mb-0 opacity-75">Stock Bajo</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-3 p-3">
+              <i class="bi bi-exclamation-triangle display-6"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 bg-gradient-info text-white rounded-4 shadow-sm">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="fw-bold mb-1">{{ total_categorias }}</h3>
+              <p class="mb-0 opacity-75">Categorías</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-3 p-3">
+              <i class="bi bi-tags display-6"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARRA DE HERRAMIENTAS -->
+  <div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-6">
+          <div class="input-group input-group-lg">
+            <span class="input-group-text bg-light border-end-0">
+              <i class="bi bi-search text-muted"></i>
+            </span>
+            <input type="text" id="searchInput" class="form-control border-start-0" 
+                   placeholder="Buscar productos por nombre, categoría...">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex gap-2 justify-content-md-end flex-wrap">
+            <button class="btn btn-primary rounded-3 px-4 py-2" data-bs-toggle="modal" data-bs-target="#filtroModal">
+            <i class="bi bi-funnel me-2"></i>Filtrar & Ordenar
+          </button>
+            <button class="btn btn-outline-primary" id="limpiarFiltros">
+              <i class="bi bi-arrow-clockwise me-2"></i>Limpiar Filtros
+            </button>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLA DE PRODUCTOS MEJORADA -->
+  <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+    <div class="card-header bg-transparent border-0 py-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0">
+          <i class="bi bi-list-ul text-primary me-2"></i>Inventario de Productos
+        </h5>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-primary px-3 py-2" id="productosFiltrados">
+            {{ productos|length }} producto{{ 's' if productos|length != 1 else '' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+        <table class="table table-hover align-middle mb-0" id="productTable">
+          <thead class="table-light sticky-top shadow-sm">
+            <tr class="text-uppercase small">
+              <th class="ps-4">Producto</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Categoría</th>
+              <th>Estado</th>
+              <th class="text-center pe-4">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in productos %}
+            <tr class="product-row" 
+                data-name="{{ p.nombre.lower() }}" 
+                data-category="{{ p.categoria.nombre.lower() if p.categoria else '' }}"
+                data-featured="{{ 'true' if p.destacado else 'false' }}"
+                data-stock="{{ p.stock }}"
+                data-price="{{ p.precio }}"
+                data-status="{{ 'agotado' if p.stock == 0 else 'bajo' if p.stock < 3 else 'disponible' }}">
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                  <div class="position-relative me-3">
+                    {% if p.imagen %}
+                    <img src="{{ url_for('admin.admin_serve_uploaded_file', filename=p.imagen) }}" 
+                         alt="{{ p.nombre }}" 
+                         class="rounded-3" 
+                         style="width: 50px; height: 50px; object-fit: cover;">
+                    {% else %}
+                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center"
+                         style="width: 50px; height: 50px;">
+                      <i class="bi bi-image text-muted"></i>
+                    </div>
+                    {% endif %}
+                    {% if p.destacado %}
+                    <span class="position-absolute top-0 start-100 translate-middle badge bg-warning rounded-pill">
+                      <i class="bi bi-star-fill"></i>
+                    </span>
+                    {% endif %}
+                  </div>
+                  <div>
+                    <h6 class="fw-bold text-dark mb-0">{{ p.nombre }}</h6>
+                    <small class="text-muted">ID: #{{ p.id }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="fw-bold text-success">${{ "%.2f"|format(p.precio) }}</span>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <span class="fw-semibold {% if p.stock < 3 %}text-danger{% elif p.stock < 20 %}text-warning{% else %}text-dark{% endif %}">
+                    {{ p.stock }}
+                  </span>
+                  {% if p.stock < 3 %}
+                  <i class="bi bi-exclamation-triangle text-danger ms-1" data-bs-toggle="tooltip" title="Stock bajo"></i>
+                  {% endif %}
+                </div>
+              </td>
+              <td>
+                {% if p.categoria %}
+                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                  {{ p.categoria.nombre }}
+                </span>
+                {% else %}
+                <span class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2 rounded-pill">
+                  Sin categoría
+                </span>
+                {% endif %}
+              </td>
+              <td>
+                {% if p.stock == 0 %}
+                <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill">
+                  <i class="bi bi-x-circle me-1"></i>Agotado
+                </span>
+                {% elif p.stock < 3 %}
+                <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill">
+                  <i class="bi bi-exclamation-triangle me-1"></i>Stock Bajo
+                </span>
+                {% else %}
+                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
+                  <i class="bi bi-check-circle me-1"></i>Disponible
+                </span>
+                {% endif %}
+              </td>
+              <td class="pe-4">
+                <div class="d-flex justify-content-center gap-2">
+                  <a href="{{ url_for('admin.editar_producto', id=p.id) }}" 
+                     class="btn btn-outline-warning btn-sm rounded-3 px-3" 
+                     data-bs-toggle="tooltip" title="Editar producto">
+                    <i class="bi bi-pencil me-1"></i>Editar
+                  </a>
+                  <form method="POST" action="{{ url_for('admin.eliminar_producto', id=p.id) }}" class="d-inline"
+                        onsubmit="return confirm('¿Estás seguro de que deseas eliminar el producto \"{{ p.nombre }}\"? Esta acción no se puede deshacer.');">
+                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 px-3" 
+                            data-bs-toggle="tooltip" title="Eliminar producto">
+                      <i class="bi bi-trash me-1"></i>Eliminar
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="text-center py-5">
+                <div class="text-muted">
+                  <i class="bi bi-bag-x display-4 mb-3"></i>
+                  <h5 class="fw-bold">No se encontraron productos</h5>
+                  <p class="mb-0">No hay productos registrados en el sistema.</p>
+                  <a href="{{ url_for('admin.nuevo_producto') }}" class="btn btn-primary mt-3">
+                    <i class="bi bi-plus-circle me-2"></i>Agregar Primer Producto
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE FILTROS Y ORDENAMIENTO -->
+<div class="modal fade" id="filtroModal" tabindex="-1" aria-labelledby="filtroModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="filtroModalLabel">
+          <i class="bi bi-funnel me-2"></i>Filtrar y Ordenar Productos
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-4">
+          <!-- FILTROS POR ESTADO -->
+          <div class="col-md-6">
+            <h6 class="fw-bold text-dark mb-3">
+              <i class="bi bi-filter-circle me-2 text-primary"></i>Filtrar por Estado
+            </h6>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" name="filtroEstado" id="todosEstados" value="all" checked>
+              <label class="form-check-label fw-medium" for="todosEstados">
+                Todos los productos
+              </label>
+            </div>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" name="filtroEstado" id="soloDestacados" value="featured">
+              <label class="form-check-label fw-medium" for="soloDestacados">
+                Solo productos destacados
+              </label>
+            </div>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" name="filtroEstado" id="stockBajo" value="low-stock">
+              <label class="form-check-label fw-medium" for="stockBajo">
+                Stock bajo (menos de 3 unidades)
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="filtroEstado" id="sinStock" value="no-stock">
+              <label class="form-check-label fw-medium" for="sinStock">
+                Sin stock
+              </label>
+            </div>
+          </div>
+
+          <!-- FILTROS POR CATEGORÍA -->
+          <div class="col-md-6">
+            <h6 class="fw-bold text-dark mb-3">
+              <i class="bi bi-tags me-2 text-primary"></i>Filtrar por Categoría
+            </h6>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" name="filtroCategoria" id="todasCategorias" value="all" checked>
+              <label class="form-check-label fw-medium" for="todasCategorias">
+                Todas las categorías
+              </label>
+            </div>
+            {% for categoria in categorias %}
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" name="filtroCategoria" id="categoria{{ categoria.id }}" value="{{ categoria.nombre.lower() }}">
+              <label class="form-check-label fw-medium" for="categoria{{ categoria.id }}">
+                {{ categoria.nombre }}
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- ORDENAMIENTO -->
+          <div class="col-12">
+            <h6 class="fw-bold text-dark mb-3">
+              <i class="bi bi-sort-down me-2 text-primary"></i>Ordenar por
+            </h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="radio" name="ordenamiento" id="ordenNombre" value="name" checked>
+                  <label class="form-check-label fw-medium" for="ordenNombre">
+                    Nombre (A-Z)
+                  </label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="radio" name="ordenamiento" id="ordenPrecio" value="price">
+                  <label class="form-check-label fw-medium" for="ordenPrecio">
+                    Precio (Menor a Mayor)
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="radio" name="ordenamiento" id="ordenStock" value="stock">
+                  <label class="form-check-label fw-medium" for="ordenStock">
+                    Stock (Mayor a Menor)
+                  </label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="radio" name="ordenamiento" id="ordenRecientes" value="recent">
+                  <label class="form-check-label fw-medium" for="ordenRecientes">
+                    Más recientes primero
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RANGO DE PRECIOS -->
+          <div class="col-12">
+            <h6 class="fw-bold text-dark mb-3">
+              <i class="bi bi-currency-dollar me-2 text-primary"></i>Rango de Precios
+            </h6>
+            <div class="row align-items-center">
+              <div class="col-md-5">
+                <label class="form-label small text-muted">Precio mínimo</label>
+                <input type="number" class="form-control" id="precioMin" placeholder="0.00" min="0">
+              </div>
+              <div class="col-md-2 text-center">
+                <span class="text-muted">a</span>
+              </div>
+              <div class="col-md-5">
+                <label class="form-label small text-muted">Precio máximo</label>
+                <input type="number" class="form-control" id="precioMax" placeholder="1000.00" min="0">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" id="limpiarFiltrosModal">
+          <i class="bi bi-arrow-clockwise me-2"></i>Limpiar Todo
+        </button>
+        <button type="button" class="btn btn-primary" id="aplicarFiltros">
+          <i class="bi bi-check-lg me-2"></i>Aplicar Filtros
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE CATEGORÍAS MEJORADO -->
+<div class="modal fade" id="modalCategorias" tabindex="-1" aria-labelledby="modalCategoriasLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header bg-gradient-primary text-white">
+        <h5 class="modal-title fw-bold">
+          <i class="bi bi-tags me-2"></i>Gestión de Categorías
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <!-- Formulario para nueva categoría -->
+        <div class="card border-0 bg-light rounded-3 mb-4">
+          <div class="card-body">
+            <h6 class="fw-bold text-dark mb-3">
+              <i class="bi bi-plus-circle text-primary me-2"></i>Agregar Nueva Categoría
+            </h6>
+            <form id="formCategoria" method="POST" action="{{ url_for('admin.nueva_categoria') }}" class="row g-3">
+              <div class="col-md-6">
+                <input type="text" name="nombre" class="form-control" placeholder="Nombre de la categoría" required>
+              </div>
+              <div class="col-md-6">
+                <input type="text" name="descripcion" class="form-control" placeholder="Descripción (opcional)">
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary rounded-3">
+                  <i class="bi bi-plus-lg me-2"></i>Agregar Categoría
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Lista de categorías -->
+        <h6 class="fw-bold text-dark mb-3">
+          <i class="bi bi-list-check text-primary me-2"></i>Categorías Existentes
+        </h6>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Productos</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in categorias %}
+              <tr>
+                <td class="fw-semibold">#{{ c.id }}</td>
+                <td>
+                  <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                    {{ c.nombre }}
+                  </span>
+                </td>
+                <td class="text-muted">{{ c.descripcion or 'Sin descripción' }}</td>
+                <td>
+                  <span class="fw-semibold">{{ c.productos|length }}</span>
+                </td>
+                <td class="text-center">
+                  <form method="POST" action="{{ url_for('admin.eliminar_categoria', id=c.id) }}" class="d-inline"
+                        onsubmit="return confirm('¿Estás seguro de que deseas eliminar la categoría \"{{ c.nombre }}\"?');">
+                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 px-3">
+                      <i class="bi bi-trash me-1"></i>Eliminar
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="5" class="text-center text-muted py-4">
+                  <i class="bi bi-tags display-4 mb-3"></i>
+                  <p class="mb-0">No hay categorías registradas.</p>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS MEJORADOS -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('searchInput');
+  const productRows = document.querySelectorAll('.product-row');
+  const contadorProductos = document.getElementById('contadorProductos');
+  const productosFiltrados = document.getElementById('productosFiltrados');
+  const limpiarFiltrosBtn = document.getElementById('limpiarFiltros');
+  const limpiarFiltrosModalBtn = document.getElementById('limpiarFiltrosModal');
+  const aplicarFiltrosBtn = document.getElementById('aplicarFiltros');
+  
+  let filtrosActuales = {
+    texto: '',
+    estado: 'all',
+    categoria: 'all',
+    orden: 'name',
+    precioMin: null,
+    precioMax: null
+  };
+
+  // Búsqueda en tiempo real
+  searchInput.addEventListener('input', () => {
+    filtrosActuales.texto = searchInput.value.toLowerCase();
+    aplicarFiltros();
+  });
+
+  // Aplicar filtros desde el modal
+  aplicarFiltrosBtn.addEventListener('click', () => {
+    // Obtener valores del modal
+    const filtroEstado = document.querySelector('input[name="filtroEstado"]:checked').value;
+    const filtroCategoria = document.querySelector('input[name="filtroCategoria"]:checked').value;
+    const ordenamiento = document.querySelector('input[name="ordenamiento"]:checked').value;
+    const precioMin = document.getElementById('precioMin').value;
+    const precioMax = document.getElementById('precioMax').value;
+
+    // Actualizar filtros
+    filtrosActuales.estado = filtroEstado;
+    filtrosActuales.categoria = filtroCategoria;
+    filtrosActuales.orden = ordenamiento;
+    filtrosActuales.precioMin = precioMin ? parseFloat(precioMin) : null;
+    filtrosActuales.precioMax = precioMax ? parseFloat(precioMax) : null;
+
+    // Cerrar modal y aplicar filtros
+    const modal = bootstrap.Modal.getInstance(document.getElementById('filtroModal'));
+    modal.hide();
+    aplicarFiltros();
+  });
+
+  // Limpiar todos los filtros (botón principal)
+  limpiarFiltrosBtn.addEventListener('click', () => {
+    limpiarFiltros();
+  });
+
+  // Limpiar filtros desde el modal
+  limpiarFiltrosModalBtn.addEventListener('click', () => {
+    // Restablecer controles del modal
+    document.getElementById('todosEstados').checked = true;
+    document.getElementById('todasCategorias').checked = true;
+    document.getElementById('ordenNombre').checked = true;
+    document.getElementById('precioMin').value = '';
+    document.getElementById('precioMax').value = '';
+    
+    // Aplicar limpieza
+    limpiarFiltros();
+  });
+
+  function limpiarFiltros() {
+    // Limpiar búsqueda
+    searchInput.value = '';
+    
+    // Restablecer filtros
+    filtrosActuales = {
+      texto: '',
+      estado: 'all',
+      categoria: 'all',
+      orden: 'name',
+      precioMin: null,
+      precioMax: null
+    };
+    
+    aplicarFiltros();
+  }
+
+  function aplicarFiltros() {
+    let productosVisibles = 0;
+    const filasVisibles = [];
+    
+    productRows.forEach(row => {
+      const name = row.dataset.name;
+      const category = row.dataset.category;
+      const featured = row.dataset.featured;
+      const stock = parseInt(row.dataset.stock);
+      const price = parseFloat(row.dataset.price);
+      const status = row.dataset.status;
+      
+      // Aplicar filtro de texto
+      const textoMatch = name.includes(filtrosActuales.texto) || 
+                         category.includes(filtrosActuales.texto);
+      
+      // Aplicar filtro de estado
+      let estadoMatch = true;
+      switch(filtrosActuales.estado) {
+        case 'featured': estadoMatch = featured === 'true'; break;
+        case 'low-stock': estadoMatch = stock < 3 && stock > 0; break;
+        case 'no-stock': estadoMatch = stock === 0; break;
+      }
+      
+      // Aplicar filtro de categoría
+      const categoriaMatch = filtrosActuales.categoria === 'all' || 
+                             category === filtrosActuales.categoria;
+      
+      // Aplicar filtro de precio
+      let precioMatch = true;
+      if (filtrosActuales.precioMin !== null) {
+        precioMatch = precioMatch && price >= filtrosActuales.precioMin;
+      }
+      if (filtrosActuales.precioMax !== null) {
+        precioMatch = precioMatch && price <= filtrosActuales.precioMax;
+      }
+      
+      // Mostrar u ocultar fila según los filtros
+      const mostrarFila = textoMatch && estadoMatch && categoriaMatch && precioMatch;
+      row.style.display = mostrarFila ? '' : 'none';
+      
+      if (mostrarFila) {
+        productosVisibles++;
+        filasVisibles.push(row);
+      }
+    });
+    
+    // Ordenar filas visibles
+    ordenarFilas(filasVisibles);
+    
+    // Actualizar contadores
+    actualizarContadores(productosVisibles);
+  }
+
+  function ordenarFilas(filas) {
+    const tbody = document.querySelector('#productTable tbody');
+    
+    filas.sort((a, b) => {
+      switch(filtrosActuales.orden) {
+        case 'name':
+          return a.dataset.name.localeCompare(b.dataset.name);
+        case 'price':
+          return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+        case 'stock':
+          return parseInt(b.dataset.stock) - parseInt(a.dataset.stock);
+        case 'recent':
+          // Por defecto, ordenar por ID (simulando más recientes)
+          return parseInt(b.dataset.id) - parseInt(a.dataset.id);
+        default:
+          return 0;
+      }
+    });
+    
+    // Reordenar las filas en la tabla
+    filas.forEach(row => tbody.appendChild(row));
+  }
+
+  function actualizarContadores(cantidad) {
+    const texto = cantidad === 1 ? 'producto' : 'productos';
+    contadorProductos.textContent = `${cantidad} ${texto}`;
+    productosFiltrados.textContent = `${cantidad} ${texto}`;
+    
+    // Cambiar color del badge si hay filtros activos
+    const hayFiltrosActivos = 
+      filtrosActuales.texto !== '' || 
+      filtrosActuales.estado !== 'all' || 
+      filtrosActuales.categoria !== 'all' || 
+      filtrosActuales.precioMin !== null || 
+      filtrosActuales.precioMax !== null;
+    
+    if (hayFiltrosActivos) {
+      contadorProductos.classList.remove('bg-primary');
+      contadorProductos.classList.add('bg-success');
+      productosFiltrados.classList.remove('bg-primary');
+      productosFiltrados.classList.add('bg-success');
+    } else {
+      contadorProductos.classList.remove('bg-success');
+      contadorProductos.classList.add('bg-primary');
+      productosFiltrados.classList.remove('bg-success');
+      productosFiltrados.classList.add('bg-primary');
+    }
+  }
+
+  // Tooltips
+  const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  tooltips.forEach(t => new bootstrap.Tooltip(t));
+});
+</script>
+
+<style>
+  .bg-gradient-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+  .bg-gradient-success { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); }
+  .bg-gradient-warning { background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%); }
+  .bg-gradient-info { background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%); }
+
+  .table-hover tbody tr {
+    transition: all 0.25s ease;
+    border-left: 3px solid transparent;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+    border-left-color: #667eea;
+    transform: translateX(2px);
+  }
+
+  .badge-modern {
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .btn-outline-warning:hover {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    border-color: #ffc107;
+    color: #212529;
+  }
+
+  .btn-outline-danger:hover {
+    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    border-color: #dc3545;
+    color: white;
+  }
+
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+  }
+
+  .bg-opacity-10 {
+    background-opacity: 0.1 !important;
+  }
+
+  /* Estilos para el modal de filtros */
+  .modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+  }
+  
+  .form-check-label {
+    cursor: pointer;
+  }
+</style>
+{% endblock %}

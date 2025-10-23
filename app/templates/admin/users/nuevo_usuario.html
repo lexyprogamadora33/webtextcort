@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+{% block title %}Nuevo Usuario - RopaStore{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-xl-6 col-lg-8 col-md-10">
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <!-- Header con gradiente -->
+        <div class="bg-gradient-primary text-white text-center py-4">
+          <div class="bg-white bg-opacity-20 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+               style="width: 80px; height: 80px;">
+            <i class="bi bi-person-plus display-6"></i>
+          </div>
+          <h3 class="fw-bold mb-1">Crear Nuevo Usuario</h3>
+          <p class="mb-0 opacity-75">Agrega un nuevo usuario al sistema RopaStore</p>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+          <form method="POST" novalidate class="needs-validation">
+            <!-- Nombre de usuario -->
+            <div class="mb-4">
+              <label for="username" class="form-label fw-semibold text-dark mb-2">
+                <i class="bi bi-person me-2 text-primary"></i>Nombre de usuario
+              </label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-person-circle text-muted"></i>
+                </span>
+                <input type="text" 
+                       name="username" 
+                       class="form-control border-start-0 ps-2" 
+                       placeholder="ej: juan_perez"
+                       required
+                       minlength="3">
+              </div>
+              
+              <div class="form-text d-flex align-items-center mt-1">
+                <i class="bi bi-info-circle me-1"></i>Este será el nombre único para identificar al usuario.
+              </div>
+            </div>
+
+            <!-- Correo electrónico -->
+            <div class="mb-4">
+              <label for="email" class="form-label fw-semibold text-dark mb-2">
+                <i class="bi bi-envelope me-2 text-primary"></i>Correo electrónico
+              </label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-at text-muted"></i>
+                </span>
+                <input type="email" 
+                       name="email" 
+                       class="form-control border-start-0 ps-2" 
+                       placeholder="usuario@correo.com"
+                       required>
+              </div>
+              
+            </div>
+
+            <!-- Contraseña -->
+            <div class="mb-4">
+              <label for="password" class="form-label fw-semibold text-dark mb-2">
+                <i class="bi bi-lock me-2 text-primary"></i>Contraseña
+              </label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-key text-muted"></i>
+                </span>
+                <input type="password" 
+                       name="password" 
+                       id="password"
+                       class="form-control border-start-0 ps-2" 
+                       placeholder="••••••••"
+                       required
+                       minlength="6">
+                <button class="btn btn-outline-secondary border-start-0" 
+                        type="button" 
+                        id="togglePassword">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+              
+              <div class="form-text d-flex align-items-center mt-1">
+                <i class="bi bi-shield-check me-1"></i>Usa una contraseña segura con letras, números y símbolos.
+              </div>
+            </div>
+
+            <!-- Confirmar contraseña -->
+            <div class="mb-4">
+              <label for="confirm_password" class="form-label fw-semibold text-dark mb-2">
+                <i class="bi bi-lock-fill me-2 text-primary"></i>Confirmar contraseña
+              </label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-key-fill text-muted"></i>
+                </span>
+                <input type="password" 
+                       name="confirm_password" 
+                       id="confirm_password"
+                       class="form-control border-start-0 ps-2" 
+                       placeholder="••••••••"
+                       required
+                       minlength="6">
+                <button class="btn btn-outline-secondary border-start-0" 
+                        type="button" 
+                        id="toggleConfirmPassword">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+              
+            </div>
+
+            <!-- Rol de administrador -->
+            <div class="card border-0 bg-light rounded-3 mb-4">
+              <div class="card-body">
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" type="checkbox" name="is_admin" id="is_admin" style="transform: scale(1.2);">
+                  <label class="form-check-label fw-semibold text-dark" for="is_admin">
+                    <i class="bi bi-shield-check me-2 text-warning"></i>Otorgar permisos de administrador
+                  </label>
+                </div>
+                <div class="form-text d-flex align-items-center mt-2">
+                  <i class="bi bi-exclamation-triangle me-2 text-warning"></i>
+                  Los administradores tienen acceso completo al sistema, incluyendo gestión de usuarios, productos y ventas.
+                </div>
+              </div>
+            </div>
+
+           
+            <!-- Botones de acción -->
+            <div class="d-flex justify-content-between align-items-center pt-3">
+              <a href="{{ url_for('admin.gestion_usuarios') }}" class="btn btn-outline-secondary rounded-3 px-4 py-2">
+                <i class="bi bi-arrow-left me-2"></i>Volver a la lista
+              </a>
+              <button type="submit" class="btn btn-primary rounded-3 px-4 py-2">
+                <i class="bi bi-person-plus me-2"></i>Crear Usuario
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts mejorados -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Toggle para mostrar/ocultar contraseña
+  const togglePassword = document.getElementById('togglePassword');
+  const passwordInput = document.getElementById('password');
+  const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+  const confirmPasswordInput = document.getElementById('confirm_password');
+  
+  function setupPasswordToggle(toggle, input) {
+    toggle.addEventListener('click', function() {
+      const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+      input.setAttribute('type', type);
+      this.innerHTML = type === 'password' 
+        ? '<i class="bi bi-eye"></i>' 
+        : '<i class="bi bi-eye-slash"></i>';
+      
+      // Efecto visual al cambiar
+      this.classList.toggle('btn-primary', type === 'text');
+      this.classList.toggle('btn-outline-secondary', type === 'password');
+    });
+  }
+  
+  setupPasswordToggle(togglePassword, passwordInput);
+  setupPasswordToggle(toggleConfirmPassword, confirmPasswordInput);
+
+  // Validación de confirmación de contraseña
+  confirmPasswordInput.addEventListener('input', function() {
+    const password = passwordInput.value;
+    const confirmPassword = this.value;
+    
+    if (confirmPassword && password !== confirmPassword) {
+      this.classList.add('is-invalid');
+      document.getElementById('confirmPasswordFeedback').style.display = 'flex';
+    } else {
+      this.classList.remove('is-invalid');
+      document.getElementById('confirmPasswordFeedback').style.display = 'none';
+    }
+  });
+
+  // Validación de formulario
+  const form = document.querySelector('.needs-validation');
+  form.addEventListener('submit', function(event) {
+    // Validar coincidencia de contraseñas
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+    
+    if (password !== confirmPassword) {
+      event.preventDefault();
+      event.stopPropagation();
+      confirmPasswordInput.classList.add('is-invalid');
+      document.getElementById('confirmPasswordFeedback').style.display = 'flex';
+    }
+    
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    form.classList.add('was-validated');
+  }, false);
+
+  // Validación en tiempo real para username
+  const usernameInput = document.querySelector('input[name="username"]');
+  usernameInput.addEventListener('input', function() {
+    if (this.value.length < 3 && this.value.length > 0) {
+      this.classList.add('is-invalid');
+    } else {
+      this.classList.remove('is-invalid');
+    }
+  });
+});
+</script>
+
+<style>
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+  }
+
+  .input-group-text {
+    background-color: #f8f9fa !important;
+    border-color: #dee2e6;
+  }
+
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+  }
+
+  .invalid-feedback {
+    font-size: 0.875rem;
+  }
+
+  .form-text {
+    font-size: 0.875rem;
+  }
+
+  .form-check-input:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+  }
+</style>
+{% endblock %}

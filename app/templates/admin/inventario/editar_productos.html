@@ -1,0 +1,394 @@
+{% extends "base.html" %}
+{% block title %}Editar Producto - RopaStore{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-xl-8 col-lg-10">
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <!-- Header con gradiente -->
+        <div class="bg-gradient-warning text-white text-center py-4">
+          <div class="bg-white bg-opacity-20 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+               style="width: 80px; height: 80px;">
+            <i class="bi bi-pencil-square display-6"></i>
+          </div>
+          <h3 class="fw-bold mb-1">Editar Producto</h3>
+          <p class="mb-0 opacity-75">Actualiza la información de {{ producto.nombre }}</p>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+          <form method="POST" enctype="multipart/form-data" novalidate class="needs-validation">
+            <!-- Información del producto -->
+            <div class="card border-0 bg-light rounded-3 mb-4">
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                      <div class="bg-warning bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3"
+                           style="width: 50px; height: 50px;">
+                        <i class="bi bi-box text-warning"></i>
+                      </div>
+                      <div>
+                        <h6 class="fw-bold text-dark mb-0">ID: #{{ producto.id }}</h6>
+                        <small class="text-muted">Creado el {{ producto.created_at.strftime('%d/%m/%Y') }}</small>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                      <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3"
+                           style="width: 50px; height: 50px;">
+                        <i class="bi bi-{% if producto.destacado %}star-fill{% else %}star{% endif %} text-primary"></i>
+                      </div>
+                      <div>
+                        <h6 class="fw-bold text-dark mb-0">Estado</h6>
+                        <small class="text-muted">
+                          {% if producto.destacado %}Destacado{% else %}Normal{% endif %} • 
+                          {% if producto.stock > 0 %}{{ producto.stock }} en stock{% else %}Agotado{% endif %}
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-4">
+              <!-- Columna izquierda - Información básica -->
+              <div class="col-lg-6">
+                <!-- Nombre del producto -->
+                <div class="mb-4">
+                  <label for="nombre" class="form-label fw-semibold text-dark mb-2">
+                    <i class="bi bi-tag me-2 text-warning"></i>Nombre del producto
+                  </label>
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-light border-end-0">
+                      <i class="bi bi-box text-muted"></i>
+                    </span>
+                    <input type="text" 
+                           name="nombre" 
+                           class="form-control border-start-0 ps-2" 
+                           value="{{ producto.nombre }}"
+                           required>
+                  </div>
+                  
+                </div>
+
+                <!-- Precio -->
+                <div class="mb-4">
+                  <label for="precio" class="form-label fw-semibold text-dark mb-2">
+                    <i class="bi bi-currency-dollar me-2 text-warning"></i>Precio
+                  </label>
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-light border-end-0">$</span>
+                    <input type="number" 
+                           name="precio" 
+                           step="0.01" 
+                           min="0"
+                           class="form-control border-start-0 ps-2" 
+                           value="{{ producto.precio }}"
+                           required>
+                  </div>
+                  
+                </div>
+
+                <!-- Stock -->
+                <div class="mb-4">
+                  <label for="stock" class="form-label fw-semibold text-dark mb-2">
+                    <i class="bi bi-box-seam me-2 text-warning"></i>Stock disponible
+                  </label>
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-light border-end-0">
+                      <i class="bi bi-hash text-muted"></i>
+                    </span>
+                    <input type="number" 
+                           name="stock" 
+                           min="0"
+                           class="form-control border-start-0 ps-2" 
+                           value="{{ producto.stock }}"
+                           required>
+                  </div>
+                  
+                  {% if producto.stock < 3 %}
+                  <div class="alert alert-warning alert-dismissible fade show mt-2 py-2" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <small>Stock bajo. Considera reponer inventario.</small>
+                  </div>
+                  {% endif %}
+                </div>
+
+                <!-- Categoría -->
+                <div class="mb-4">
+                  <label for="categoria_id" class="form-label fw-semibold text-dark mb-2">
+                    <i class="bi bi-tags me-2 text-warning"></i>Categoría
+                  </label>
+                  <select name="categoria_id" class="form-select form-select-lg shadow-sm">
+                    <option value="">Sin categoría</option>
+                    {% for c in categorias %}
+                      <option value="{{ c.id }}" {% if producto.categoria_id == c.id %}selected{% endif %}>
+                        {{ c.nombre }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <!-- Columna derecha - Imagen y detalles -->
+              <div class="col-lg-6">
+                <!-- Descripción -->
+                <div class="mb-4">
+                  <label for="descripcion" class="form-label fw-semibold text-dark mb-2">
+                    <i class="bi bi-text-paragraph me-2 text-warning"></i>Descripción
+                  </label>
+                  <textarea name="descripcion" 
+                            rows="5" 
+                            class="form-control shadow-sm" 
+                            required>{{ producto.descripcion }}</textarea>
+                  
+                </div>
+
+                <!-- Gestión de imagen -->
+                <div class="mb-4">
+                  <label class="form-label fw-semibold text-dark mb-2">
+                    <i class="bi bi-image me-2 text-warning"></i>Imagen del producto
+                  </label>
+                  
+                  <!-- Imagen actual -->
+                  <div class="card border-0 bg-light rounded-3 mb-3">
+                    <div class="card-body text-center">
+                      <h6 class="fw-semibold text-dark mb-3">Imagen actual</h6>
+                      {% if producto.imagen %}
+                        <img src="{{ url_for('admin.admin_serve_uploaded_file', filename=producto.imagen) }}" 
+                             alt="{{ producto.nombre }}" 
+                             class="img-fluid rounded-3 shadow-sm mb-2" 
+                             style="max-height: 180px; object-fit: cover;">
+                        <p class="text-muted small mb-0">{{ producto.imagen }}</p>
+                      {% else %}
+                        <div class="text-muted py-4">
+                          <i class="bi bi-image display-4 mb-2"></i>
+                          <p class="mb-0">No hay imagen actual</p>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <!-- Nueva imagen -->
+                  <div class="card border-0 bg-white g-opacity-5 rounded-3">
+                    <div class="card-body">
+                      <h6 class="fw-semibold text-dark mb-3">Cambiar imagen</h6>
+                      <input type="file" 
+                             name="imagen" 
+                             id="imagen" 
+                             accept="image/*" 
+                             class="form-control mb-3"
+                             onchange="previewImage(event)">
+                      <div class="text-center">
+                        <img id="preview" 
+                             src="#" 
+                             alt="Vista previa de la nueva imagen" 
+                             class="img-fluid rounded-3 shadow-sm d-none" 
+                             style="max-height: 150px; object-fit: cover;">
+                        <div id="noPreview" class="text-muted py-3 d-none">
+                          <i class="bi bi-image display-6 mb-2"></i>
+                          <p class="mb-0 small">Se mostrará la vista previa aquí</p>
+                        </div>
+                      </div>
+                      <div class="form-text text-center mt-2">
+                        <i class="bi bi-info-circle me-1"></i>Formatos: JPG, PNG, GIF. Tamaño máximo: 5MB
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Opciones adicionales -->
+            <div class="row mt-2">
+              <div class="col-12">
+                <div class="card border-0 bg-warning bg-opacity-5 rounded-3">
+                  <div class="card-body">
+                    <div class="form-check form-switch mb-0">
+                      <input class="form-check-input" 
+                             type="checkbox" 
+                             name="destacado" 
+                             id="destacado" 
+                             style="transform: scale(1.2);"
+                             {% if producto.destacado %}checked{% endif %}>
+                      <label class="form-check-label fw-semibold text-dark" for="destacado">
+                        <i class="bi bi-star me-2 text-warning"></i>Destacar producto
+                      </label>
+                    </div>
+                    <div class="form-text mt-2">
+                      {% if producto.destacado %}
+                        <span class="text-warning fw-semibold">
+                          <i class="bi bi-star-fill me-1"></i>Este producto actualmente está destacado en la página principal.
+                        </span>
+                      {% else %}
+                        Los productos destacados aparecen en la página principal y tienen mayor visibilidad.
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            
+
+            <!-- Botones de acción -->
+            <div class="d-flex justify-content-between align-items-center pt-4 mt-4 border-top">
+              <a href="{{ url_for('admin.inventario') }}" class="btn btn-outline-secondary rounded-3 px-4 py-2">
+                <i class="bi bi-arrow-left me-2"></i>Cancelar
+              </a>
+              <div class="d-flex gap-2">
+                <form method="POST" action="{{ url_for('admin.eliminar_producto', id=producto.id) }}" class="d-inline"
+                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar el producto \"{{ producto.nombre }}\"? Esta acción no se puede deshacer.');">
+                  <button type="submit" class="btn btn-outline-danger rounded-3 px-4 py-2">
+                    <i class="bi bi-trash me-2"></i>Eliminar
+                  </button>
+                </form>
+                <button type="submit" class="btn btn-warning rounded-3 px-4 py-2">
+                  <i class="bi bi-check-circle me-2"></i>Actualizar Producto
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts mejorados -->
+<script>
+function previewImage(event) {
+  const file = event.target.files[0];
+  const preview = document.getElementById('preview');
+  const noPreview = document.getElementById('noPreview');
+  
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.src = e.target.result;
+      preview.classList.remove('d-none');
+      noPreview.classList.add('d-none');
+    };
+    reader.readAsDataURL(file);
+  } else {
+    preview.classList.add('d-none');
+    noPreview.classList.remove('d-none');
+  }
+}
+
+// Validación de formulario
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.querySelector('.needs-validation');
+  
+  form.addEventListener('submit', function(event) {
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      // Scroll al primer campo inválido
+      const firstInvalid = form.querySelector('.is-invalid');
+      if (firstInvalid) {
+        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+    
+    form.classList.add('was-validated');
+  }, false);
+
+  // Validación en tiempo real para precio
+  const precioInput = document.querySelector('input[name="precio"]');
+  precioInput.addEventListener('input', function() {
+    if (this.value < 0) {
+      this.classList.add('is-invalid');
+    } else {
+      this.classList.remove('is-invalid');
+    }
+  });
+
+  // Validación en tiempo real para stock
+  const stockInput = document.querySelector('input[name="stock"]');
+  stockInput.addEventListener('input', function() {
+    if (this.value < 0) {
+      this.classList.add('is-invalid');
+    } else {
+      this.classList.remove('is-invalid');
+    }
+  });
+
+  // Mostrar noPreview inicialmente
+  document.getElementById('noPreview').classList.remove('d-none');
+});
+</script>
+
+<style>
+  .bg-gradient-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+  }
+
+  .form-control:focus, .form-select:focus {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+  }
+
+  .btn-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-warning:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 193, 7, 0.4);
+  }
+
+  .input-group-text {
+    background-color: #f8f9fa !important;
+    border-color: #dee2e6;
+  }
+
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+  }
+
+  .invalid-feedback {
+    font-size: 0.875rem;
+  }
+
+  .form-text {
+    font-size: 0.875rem;
+  }
+
+  .form-check-input:checked {
+    background-color: #ffc107;
+    border-color: #ffc107;
+  }
+
+  .bg-opacity-5 {
+    background-opacity: 0.05 !important;
+  }
+
+  .btn-outline-danger:hover {
+    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    border-color: #dc3545;
+    color: white;
+  }
+
+  .btn-outline-secondary:hover {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    border-color: #6c757d;
+    color: white;
+  }
+
+  .alert-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.2);
+  }
+</style>
+{% endblock %}

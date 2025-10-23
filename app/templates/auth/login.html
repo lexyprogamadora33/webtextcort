@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block title %}Iniciar Sesión - RopaStore{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-xl-5 col-lg-6 col-md-8">
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <!-- Header con gradiente -->
+        <div class="bg-gradient-primary text-white text-center py-4">
+          <div class="bg-white bg-opacity-20 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+               style="width: 80px; height: 80px;">
+            <i class="bi bi-person-check display-6"></i>
+          </div>
+          <h3 class="fw-bold mb-1">Bienvenido de nuevo</h3>
+          <p class="mb-0 opacity-75">Ingresa a tu cuenta RopaStore</p>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+          <form method="POST" novalidate class="needs-validation" novalidate>
+            <!-- Campo Email -->
+            <div class="mb-4">
+              <label for="email" class="form-label fw-semibold text-dark mb-2">
+                <i class="bi bi-envelope me-2 text-primary"></i>Correo electrónico
+              </label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-at text-muted"></i>
+                </span>
+                <input 
+                  type="email" 
+                  class="form-control border-start-0 ps-2" 
+                  id="email" 
+                  name="email" 
+                  placeholder="tu@correo.com"
+                  required
+                >
+              </div>
+            </div>
+
+            <!-- Campo Contraseña -->
+            <div class="mb-4">
+              <label for="password" class="form-label fw-semibold text-dark mb-2">
+                <i class="bi bi-lock me-2 text-primary"></i>Contraseña
+              </label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-key text-muted"></i>
+                </span>
+                <input 
+                  type="password" 
+                  class="form-control border-start-0 ps-2" 
+                  id="password" 
+                  name="password" 
+                  placeholder="••••••••"
+                  required
+                >
+                <button 
+                  class="btn btn-outline-secondary border-start-0" 
+                  type="button" 
+                  id="togglePassword"
+                  tabindex="-1"
+                >
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+              
+            </div>
+
+            <!-- Botón de envío -->
+            <button type="submit" class="btn btn-primary btn-lg w-100 py-3 fw-semibold rounded-3 mb-4">
+              <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+            </button>
+
+
+
+            <!-- Enlace a registro -->
+            <div class="text-center">
+              <p class="text-muted mb-0">
+                ¿No tienes cuenta?
+                <a href="{{ url_for('auth.register') }}" class="text-primary text-decoration-none fw-semibold">
+                  Regístrate aquí
+                </a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tarjetas informativas -->
+      <div class="row mt-4 g-3">
+        <div class="col-md-4">
+          <div class="card border-0 bg-light rounded-3 p-3 text-center">
+            <i class="bi bi-truck text-primary display-6 mb-2"></i>
+            <p class="small text-muted mb-0">Envío gratis en compras mayores</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 bg-light rounded-3 p-3 text-center">
+            <i class="bi bi-shield-check text-success display-6 mb-2"></i>
+            <p class="small text-muted mb-0">Compra 100% segura</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 bg-light rounded-3 p-3 text-center">
+            <i class="bi bi-arrow-repeat text-warning display-6 mb-2"></i>
+            <p class="small text-muted mb-0">Devoluciones fáciles</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script para mostrar/ocultar la contraseña -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+    
+    togglePassword.addEventListener("click", function() {
+      const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+      passwordInput.setAttribute("type", type);
+      this.innerHTML = type === "password" 
+        ? '<i class="bi bi-eye"></i>' 
+        : '<i class="bi bi-eye-slash"></i>';
+      
+      // Efecto visual al cambiar
+      this.classList.toggle('btn-primary', type === 'text');
+      this.classList.toggle('btn-outline-secondary', type === 'password');
+    });
+
+    // Validación de formulario
+    const form = document.querySelector('.needs-validation');
+    form.addEventListener('submit', function(event) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    }, false);
+  });
+</script>
+
+<style>
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+  }
+
+  .input-group-text {
+    background-color: #f8f9fa !important;
+    border-color: #dee2e6;
+  }
+
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+  }
+
+  .invalid-feedback {
+    font-size: 0.875rem;
+  }
+</style>
+{% endblock %}

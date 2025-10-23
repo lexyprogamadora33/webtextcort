@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+{% block title %}Detalle de Venta #{{ venta.id }} - RopaStore{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-xl-8 col-lg-10">
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <!-- Header con gradiente -->
+        <div class="bg-gradient-primary text-white text-center py-4">
+          <div class="bg-white bg-opacity-20 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+               style="width: 80px; height: 80px;">
+            <i class="bi bi-receipt display-6"></i>
+          </div>
+          <h3 class="fw-bold mb-1">Detalle de Venta</h3>
+          <p class="mb-0 opacity-75">Factura #{{ venta.id }}</p>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+          <!-- Información de la venta -->
+          <div class="row g-4 mb-4">
+            <div class="col-md-6">
+              <div class="card border-0 bg-light rounded-3 h-100">
+                <div class="card-body">
+                  <h6 class="fw-bold text-dark mb-3">
+                    <i class="bi bi-person me-2 text-primary"></i>Información del Cliente
+                  </h6>
+                  <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3"
+                         style="width: 40px; height: 40px;">
+                      <i class="bi bi-person text-primary"></i>
+                    </div>
+                    <div>
+                      <div class="fw-semibold text-dark">{{ venta.usuario.username if venta.usuario else 'Cliente Desconocido' }}</div>
+                      {% if venta.usuario %}
+                      <small class="text-muted">{{ venta.usuario.email }}</small>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card border-0 bg-light rounded-3 h-100">
+                <div class="card-body">
+                  <h6 class="fw-bold text-dark mb-3">
+                    <i class="bi bi-calendar me-2 text-primary"></i>Información de la Venta
+                  </h6>
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <small class="text-muted">Fecha</small>
+                      <div class="fw-semibold text-dark">{{ venta.fecha.strftime('%d/%m/%Y') }}</div>
+                    </div>
+                    <div class="col-6">
+                      <small class="text-muted">Hora</small>
+                      <div class="fw-semibold text-dark">{{ venta.fecha.strftime('%H:%M') }}</div>
+                    </div>
+                    <div class="col-6">
+                      <small class="text-muted">ID Venta</small>
+                      <div class="fw-semibold text-dark">#{{ venta.id }}</div>
+                    </div>
+                    <div class="col-6">
+                      <small class="text-muted">Productos</small>
+                      <div class="fw-semibold text-dark">{{ venta.detalles|length }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detalle de productos -->
+          <div class="card border-0 shadow-sm rounded-3 mb-4">
+            <div class="card-header bg-transparent border-0 py-3">
+              <h5 class="fw-bold mb-0">
+                <i class="bi bi-bag-check me-2 text-primary"></i>Productos Vendidos
+              </h5>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="ps-4">Producto</th>
+                      <th class="text-center">Cantidad</th>
+                      <th class="text-center">Precio Unitario</th>
+                      <th class="text-center pe-4">Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for d in venta.detalles %}
+                    <tr>
+                      <td class="ps-4">
+                        <div class="d-flex align-items-center">
+                          <div class="bg-primary bg-opacity-10 rounded-2 d-flex align-items-center justify-content-center me-3"
+                               style="width: 40px; height: 40px;">
+                            <i class="bi bi-box text-primary"></i>
+                          </div>
+                          <div>
+                            <div class="fw-semibold text-dark">{{ d.producto.nombre }}</div>
+                            {% if d.producto.categoria %}
+                            <small class="text-muted">{{ d.producto.categoria.nombre }}</small>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </td>
+                      <td class="text-center">
+                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                          {{ d.cantidad }}
+                        </span>
+                      </td>
+                      <td class="text-center">
+                        <span class="fw-semibold text-dark">${{ "%.2f"|format(d.precio_unitario) }}</span>
+                      </td>
+                      <td class="text-center pe-4">
+                        <span class="fw-bold text-success">${{ "%.2f"|format(d.subtotal) }}</span>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Resumen total -->
+          <div class="row justify-content-end">
+            <div class="col-lg-6">
+              <div class="card border-0 bg-gradient-success text-white rounded-3">
+                <div class="card-body p-4">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0">Total de la Venta</h5>
+                    <div class="bg-white bg-opacity-20 rounded-2 p-2">
+                      <i class="bi bi-currency-dollar display-6"></i>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center border-top border-white border-opacity-25 pt-3">
+                    <span class="h5 mb-0">Total a Pagar:</span>
+                    <span class="h2 fw-bold">${{ "%.2f"|format(venta.total) }}</span>
+                  </div>
+                  <div class="mt-3 text-center">
+                    <small class="opacity-75">
+                      <i class="bi bi-info-circle me-1"></i>
+                      Incluye {{ venta.detalles|length }} producto{{ 's' if venta.detalles|length != 1 else '' }}
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Información adicional -->
+          <div class="card border-0 bg-warning bg-opacity-5 rounded-3 mt-4">
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <div class="d-flex align-items-center">
+                    <div class="bg-warning bg-opacity-10 rounded-2 p-2 me-3">
+                      <i class="bi bi-clock text-warning"></i>
+                    </div>
+                    <div>
+                      <small class="text-muted d-block">Duración</small>
+                      <span class="fw-semibold text-dark">{% if venta.fecha %}{{ venta.fecha.strftime('%H:%M') }}{% else %}N/A{% endif %}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="d-flex align-items-center">
+                    <div class="bg-info bg-opacity-10 rounded-2 p-2 me-3">
+                      <i class="bi bi-calculator text-info"></i>
+                    </div>
+                    <div>
+                      <small class="text-muted d-block">Items Totales</small>
+                      <span class="fw-semibold text-dark">
+                        {{ venta.detalles|sum(attribute='cantidad') }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="d-flex align-items-center">
+                    <div class="bg-success bg-opacity-10 rounded-2 p-2 me-3">
+                      <i class="bi bi-check-circle text-success"></i>
+                    </div>
+                    <div>
+                      <small class="text-muted d-block">Estado</small>
+                      <span class="fw-semibold text-dark">Completada</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="d-flex justify-content-between align-items-center pt-4 mt-4 border-top">
+            <a href="{{ url_for('admin.gestion_ventas') }}" class="btn btn-outline-secondary rounded-3 px-4 py-2">
+              <i class="bi bi-arrow-left me-2"></i>Volver al Listado
+            </a>
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-primary rounded-3 px-4 py-2" onclick="window.print()">
+                <i class="bi bi-printer me-2"></i>Imprimir
+              </button>
+              <a href="{{ url_for('admin.exportar_pdf') }}?venta_id={{ venta.id }}" class="btn btn-primary rounded-3 px-4 py-2">
+                <i class="bi bi-file-earmark-pdf me-2"></i>Exportar PDF
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Estilos para impresión -->
+<style>
+  @media print {
+    .btn, .border-top {
+      display: none !important;
+    }
+    
+    .card {
+      box-shadow: none !important;
+      border: 1px solid #dee2e6 !important;
+    }
+    
+    .bg-gradient-primary, .bg-gradient-success {
+      background: #f8f9fa !important;
+      color: #000 !important;
+    }
+    
+    .bg-opacity-10 {
+      background-color: transparent !important;
+    }
+  }
+
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .bg-gradient-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  }
+
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+  }
+
+  .bg-opacity-5 {
+    background-opacity: 0.05 !important;
+  }
+
+  .bg-opacity-10 {
+    background-opacity: 0.1 !important;
+  }
+
+  .bg-opacity-20 {
+    background-opacity: 0.2 !important;
+  }
+
+  .border-opacity-25 {
+    border-opacity: 0.25 !important;
+  }
+
+  .btn-outline-primary:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+  }
+</style>
+{% endblock %}

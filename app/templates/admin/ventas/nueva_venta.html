@@ -1,0 +1,349 @@
+{% extends "base.html" %}
+{% block title %}Nueva Venta - RopaStore{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-xl-8 col-lg-10">
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <!-- Header con gradiente -->
+        <div class="bg-gradient-success text-white text-center py-4">
+          <div class="bg-white bg-opacity-20 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+               style="width: 80px; height: 80px;">
+            <i class="bi bi-cart-check display-6"></i>
+          </div>
+          <h3 class="fw-bold mb-1">Registrar Nueva Venta</h3>
+          <p class="mb-0 opacity-75">Procesa una venta para un cliente</p>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+          <form method="POST" novalidate class="needs-validation">
+            <!-- Información del cliente -->
+            <div class="mb-4">
+              <label for="usuario_id" class="form-label fw-semibold text-dark mb-2">
+                <i class="bi bi-person me-2 text-success"></i>Seleccionar Cliente
+              </label>
+              <select name="usuario_id" class="form-select form-select-lg shadow-sm" required>
+                <option value="">Selecciona un cliente...</option>
+                {% for u in usuarios %}
+                  <option value="{{ u.id }}">{{ u.username }} - {{ u.email }}</option>
+                {% endfor %}
+              </select>
+              
+            </div>
+
+            <!-- Selección de productos -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold text-dark mb-3">
+                <i class="bi bi-bag me-2 text-success"></i>Seleccionar Productos
+              </label>
+              
+              <div class="card border-0 bg-light rounded-3">
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                      <thead class="table-light">
+                        <tr>
+                          <th class="text-center" style="width: 50px;">
+                            <i class="bi bi-check-square"></i>
+                          </th>
+                          <th>Producto</th>
+                          <th class="text-center">Precio</th>
+                          <th class="text-center">Stock</th>
+                          <th class="text-center" style="width: 120px;">Cantidad</th>
+                          <th class="text-center">Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for p in productos %}
+                        <tr class="product-row" data-price="{{ p.precio }}" data-stock="{{ p.stock }}">
+                          <td class="text-center">
+                            <input type="checkbox" 
+                                   name="producto_id" 
+                                   value="{{ p.id }}" 
+                                   id="prod{{ p.id }}" 
+                                   class="form-check-input product-checkbox"
+                                   style="transform: scale(1.2);">
+                          </td>
+                          <td>
+                            <label for="prod{{ p.id }}" class="fw-semibold text-dark cursor-pointer">
+                              {{ p.nombre }}
+                            </label>
+                            {% if p.categoria %}
+                            <br>
+                            <small class="text-muted">{{ p.categoria.nombre }}</small>
+                            {% endif %}
+                          </td>
+                          <td class="text-center">
+                            <span class="fw-bold text-success">${{ "%.2f"|format(p.precio) }}</span>
+                          </td>
+                          <td class="text-center">
+                            <span class="badge {% if p.stock > 10 %}bg-success{% elif p.stock > 0 %}bg-warning{% else %}bg-danger{% endif %}">
+                              {{ p.stock }} disp.
+                            </span>
+                          </td>
+                          <td class="text-center">
+                            <input type="number" 
+                                   name="cantidad" 
+                                   class="form-control form-control-sm quantity-input" 
+                                   min="1" 
+                                   max="{{ p.stock }}" 
+                                   value="1"
+                                   disabled
+                                   data-product-id="{{ p.id }}">
+                          </td>
+                          <td class="text-center">
+                            <span class="fw-semibold text-primary product-subtotal" data-product-id="{{ p.id }}">
+                              ${{ "%.2f"|format(p.precio) }}
+                            </span>
+                          </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                          <td colspan="6" class="text-center py-4 text-muted">
+                            <i class="bi bi-bag-x display-4 mb-3"></i>
+                            <p class="mb-0">No hay productos disponibles en stock.</p>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Resumen de la venta -->
+            <div class="card border-0 bg-primary bg-opacity-5 rounded-3 mb-4">
+              <div class="card-body">
+                <h6 class="fw-bold text-primary mb-3">
+                  <i class="bi bi-receipt me-2"></i>Resumen de la Venta
+                </h6>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="text-muted">Productos seleccionados:</span>
+                      <span class="fw-semibold" id="selected-products-count">0</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="text-muted">Total de items:</span>
+                      <span class="fw-semibold" id="total-items-count">0</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="text-muted">Subtotal:</span>
+                      <span class="fw-semibold" id="subtotal-amount">$0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center border-top pt-2">
+                      <span class="text-dark fw-bold">Total a pagar:</span>
+                      <span class="h5 fw-bold text-success" id="total-amount">$0.00</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- Botones de acción -->
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+              <a href="{{ url_for('admin.gestion_ventas') }}" class="btn btn-outline-secondary rounded-3 px-4 py-2">
+                <i class="bi bi-arrow-left me-2"></i>Cancelar
+              </a>
+              <button type="submit" class="btn btn-success rounded-3 px-4 py-2" id="submit-btn" disabled>
+                <i class="bi bi-cart-check me-2"></i>Procesar Venta
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts mejorados -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const checkboxes = document.querySelectorAll('.product-checkbox');
+  const quantityInputs = document.querySelectorAll('.quantity-input');
+  const selectedProductsCount = document.getElementById('selected-products-count');
+  const totalItemsCount = document.getElementById('total-items-count');
+  const subtotalAmount = document.getElementById('subtotal-amount');
+  const totalAmount = document.getElementById('total-amount');
+  const submitBtn = document.getElementById('submit-btn');
+
+  // Habilitar/deshabilitar cantidad cuando se selecciona un producto
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+      const productId = this.value;
+      const quantityInput = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
+      const productRow = this.closest('.product-row');
+      
+      if (this.checked) {
+        quantityInput.disabled = false;
+        productRow.classList.add('table-success');
+      } else {
+        quantityInput.disabled = true;
+        quantityInput.value = 1;
+        productRow.classList.remove('table-success');
+      }
+      updateSummary();
+    });
+  });
+
+  // Actualizar subtotal cuando cambia la cantidad
+  quantityInputs.forEach(input => {
+    input.addEventListener('input', function() {
+      const productId = this.dataset.productId;
+      const price = parseFloat(this.closest('.product-row').dataset.price);
+      const quantity = parseInt(this.value) || 0;
+      const stock = parseInt(this.closest('.product-row').dataset.stock);
+      
+      // Validar stock
+      if (quantity > stock) {
+        this.value = stock;
+        showStockAlert(stock);
+      }
+      
+      // Actualizar subtotal del producto
+      const subtotalElement = document.querySelector(`.product-subtotal[data-product-id="${productId}"]`);
+      const subtotal = price * (parseInt(this.value) || 0);
+      subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+      
+      updateSummary();
+    });
+  });
+
+  function updateSummary() {
+    let selectedCount = 0;
+    let totalItems = 0;
+    let subtotal = 0;
+
+    checkboxes.forEach(checkbox => {
+      if (checkbox.checked) {
+        selectedCount++;
+        const productId = checkbox.value;
+        const quantityInput = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
+        const quantity = parseInt(quantityInput.value) || 0;
+        const price = parseFloat(checkbox.closest('.product-row').dataset.price);
+        
+        totalItems += quantity;
+        subtotal += price * quantity;
+      }
+    });
+
+    // Actualizar UI
+    selectedProductsCount.textContent = selectedCount;
+    totalItemsCount.textContent = totalItems;
+    subtotalAmount.textContent = `$${subtotal.toFixed(2)}`;
+    totalAmount.textContent = `$${subtotal.toFixed(2)}`;
+
+    // Habilitar/deshabilitar botón de envío
+    submitBtn.disabled = selectedCount === 0;
+  }
+
+  function showStockAlert(stock) {
+    // Podrías implementar un toast o alerta más elegante aquí
+    alert(`⚠️ Solo hay ${stock} unidades disponibles en stock.`);
+  }
+
+  // Validación de formulario
+  const form = document.querySelector('.needs-validation');
+  form.addEventListener('submit', function(event) {
+    let hasSelectedProducts = false;
+    
+    checkboxes.forEach(checkbox => {
+      if (checkbox.checked) {
+        hasSelectedProducts = true;
+        const productId = checkbox.value;
+        const quantityInput = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
+        const quantity = parseInt(quantityInput.value) || 0;
+        
+        if (quantity < 1) {
+          event.preventDefault();
+          event.stopPropagation();
+          quantityInput.classList.add('is-invalid');
+        }
+      }
+    });
+
+    if (!hasSelectedProducts) {
+      event.preventDefault();
+      event.stopPropagation();
+      alert('⚠️ Debes seleccionar al menos un producto para realizar la venta.');
+    }
+
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    form.classList.add('was-validated');
+  }, false);
+});
+</script>
+
+<style>
+  .bg-gradient-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  }
+
+  .form-control:focus, .form-select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-success:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(40, 167, 69, 0.4);
+  }
+
+  .btn-success:disabled {
+    background: #6c757d;
+    border-color: #6c757d;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+  }
+
+  .table-success {
+    background-color: rgba(40, 167, 69, 0.05) !important;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
+  .bg-opacity-5 {
+    background-opacity: 0.05 !important;
+  }
+
+  .quantity-input:disabled {
+    background-color: #e9ecef;
+    opacity: 0.6;
+  }
+
+  .btn-outline-secondary:hover {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    border-color: #6c757d;
+    color: white;
+  }
+</style>
+{% endblock %}

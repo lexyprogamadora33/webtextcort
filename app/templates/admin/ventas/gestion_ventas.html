@@ -1,0 +1,430 @@
+{% extends "base.html" %}
+{% block title %}Gestión Financiera - RopaStore{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+  <!-- ENCABEZADO MEJORADO -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+        <div class="mb-3 mb-md-0">
+          <h1 class="h2 fw-bold text-dark mb-2">
+            <i class="bi bi-graph-up text-primary me-2"></i>Gestión Financiera
+          </h1>
+          <p class="text-muted mb-0">Controla tus ventas, gastos y flujo de efectivo</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="btn btn-outline-primary rounded-3 px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalGasto">
+            <i class="bi bi-wallet2 me-2"></i>Nuevo Gasto
+          </button>
+          <a href="{{ url_for('admin.nueva_venta') }}" class="btn btn-primary rounded-3 px-4 py-2">
+            <i class="bi bi-cart-plus me-2"></i>Nueva Venta
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TARJETAS DE RESUMEN MEJORADAS -->
+  <div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 bg-gradient-success text-white rounded-4 shadow-sm">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="fw-bold mb-1">${{ "{:,.2f}".format(total_ventas) }}</h3>
+              <p class="mb-0 opacity-75">Ventas Totales</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-3 p-3">
+              <i class="bi bi-currency-dollar display-6"></i>
+            </div>
+          </div>
+          <div class="mt-3">
+            <span class="badge bg-white bg-opacity-20 text-white">
+              <i class="bi bi-arrow-up me-1"></i>{{ ventas|length }} transacciones
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 bg-gradient-danger text-white rounded-4 shadow-sm">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="fw-bold mb-1">${{ "{:,.2f}".format(total_gastos) }}</h3>
+              <p class="mb-0 opacity-75">Gastos Totales</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-3 p-3">
+              <i class="bi bi-cash-stack display-6"></i>
+            </div>
+          </div>
+          <div class="mt-3">
+            <span class="badge bg-white bg-opacity-20 text-white">
+              <i class="bi bi-arrow-down me-1"></i>{{ gastos|length }} registros
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 bg-gradient-primary text-white rounded-4 shadow-sm">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="fw-bold mb-1">${{ "{:,.2f}".format(total_neto) }}</h3>
+              <p class="mb-0 opacity-75">Efectivo Neto</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-3 p-3">
+              <i class="bi bi-wallet2 display-6"></i>
+            </div>
+          </div>
+          <div class="mt-3">
+            <span class="badge bg-white bg-opacity-20 text-white">
+              {% if total_neto >= 0 %}
+                <i class="bi bi-arrow-up me-1"></i>Positivo
+              {% else %}
+                <i class="bi bi-arrow-down me-1"></i>Negativo
+              {% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 bg-gradient-warning text-white rounded-4 shadow-sm">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="fw-bold mb-1">{{ (total_ventas / total_gastos)|round(2) if total_gastos > 0 else 'N/A' }}</h3>
+              <p class="mb-0 opacity-75">Ratio V/G</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-3 p-3">
+              <i class="bi bi-percent display-6"></i>
+            </div>
+          </div>
+          <div class="mt-3">
+            <span class="badge bg-white bg-opacity-20 text-white">
+              <i class="bi bi-graph-up me-1"></i>Rentabilidad
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTROS MEJORADOS -->
+  <div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-header bg-transparent border-0 py-4">
+      <h5 class="fw-bold mb-0">
+        <i class="bi bi-funnel text-primary me-2"></i>Filtros y Búsqueda
+      </h5>
+    </div>
+    <div class="card-body">
+      <form method="GET" action="{{ url_for('admin.gestion_ventas') }}">
+        <div class="row g-4 align-items-end">
+          <div class="col-xl-3 col-md-6">
+            <label class="form-label fw-semibold text-dark mb-2">
+              <i class="bi bi-calendar me-2 text-primary"></i>Fecha desde
+            </label>
+            <input type="date" name="fecha_desde" value="{{ filtro_fecha_desde }}" class="form-control form-control-lg">
+          </div>
+          <div class="col-xl-3 col-md-6">
+            <label class="form-label fw-semibold text-dark mb-2">
+              <i class="bi bi-calendar me-2 text-primary"></i>Fecha hasta
+            </label>
+            <input type="date" name="fecha_hasta" value="{{ filtro_fecha_hasta }}" class="form-control form-control-lg">
+          </div>
+          <div class="col-xl-3 col-md-6">
+            <label class="form-label fw-semibold text-dark mb-2">
+              <i class="bi bi-person me-2 text-primary"></i>Cliente
+            </label>
+            <input type="text" name="cliente" value="{{ filtro_cliente }}" class="form-control form-control-lg" placeholder="Buscar cliente...">
+          </div>
+          <div class="col-xl-3 col-md-6">
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-primary btn-lg w-50 rounded-3">
+                <i class="bi bi-funnel me-2"></i>Filtrar
+              </button>
+              <a href="{{ url_for('admin.gestion_ventas') }}" class="btn btn-outline-secondary btn-lg w-50 rounded-3">
+                <i class="bi bi-x-circle me-2"></i>Limpiar
+              </a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TABLA COMBINADA MEJORADA -->
+  <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+    <div class="card-header bg-transparent border-0 py-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0">
+          <i class="bi bi-list-ul text-primary me-2"></i>Registro de Transacciones
+        </h5>
+        <div class="d-flex gap-2">
+          <span class="badge bg-primary badge-modern px-3 py-2">
+            {{ ventas|length + gastos|length }} registros
+          </span>
+          <a href="{{ url_for('admin.exportar_pdf', 
+                fecha_desde=request.args.get('fecha_desde'), 
+                fecha_hasta=request.args.get('fecha_hasta'), 
+                cliente=request.args.get('cliente')) }}" 
+             class="btn btn-outline-danger btn-sm rounded-3 px-3">
+            <i class="bi bi-file-earmark-pdf me-2"></i>Exportar PDF
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light sticky-top shadow-sm">
+            <tr class="text-uppercase small">
+              <th class="ps-4">Transacción</th>
+              <th>Detalles</th>
+              <th>Fecha</th>
+              <th>Monto</th>
+              <th class="text-center pe-4">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for v in ventas %}
+            <tr class="transaction-row">
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                  <div class="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3"
+                       style="width: 40px; height: 40px;">
+                    <i class="bi bi-cart-check text-success"></i>
+                  </div>
+                  <div>
+                    <h6 class="fw-bold text-dark mb-0">Venta #{{ v.id }}</h6>
+                    <small class="text-muted">Ingreso</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="fw-semibold text-dark">{{ v.usuario.username if v.usuario else 'Cliente desconocido' }}</div>
+                <small class="text-muted">{{ v.detalles|length }} producto{{ 's' if v.detalles|length != 1 else '' }}</small>
+              </td>
+              <td>
+                <div class="text-muted">
+                  <div>{{ v.fecha.strftime('%d/%m/%Y') }}</div>
+                  <small>{{ v.fecha.strftime('%H:%M') }}</small>
+                </div>
+              </td>
+              <td>
+                <span class="fw-bold text-success">+ ${{ "%.2f"|format(v.total) }}</span>
+              </td>
+              <td class="pe-4">
+                <div class="d-flex justify-content-center gap-2">
+                  <a href="{{ url_for('admin.ver_venta', id=v.id) }}" 
+                     class="btn btn-outline-info btn-sm rounded-3 px-3" 
+                     data-bs-toggle="tooltip" title="Ver detalles">
+                    <i class="bi bi-eye me-1"></i>Detalles
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+
+            {% for g in gastos %}
+            <tr class="transaction-row">
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                  <div class="bg-danger bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3"
+                       style="width: 40px; height: 40px;">
+                    <i class="bi bi-cash-stack text-danger"></i>
+                  </div>
+                  <div>
+                    <h6 class="fw-bold text-dark mb-0">Gasto #{{ g.id }}</h6>
+                    <small class="text-muted">Egreso</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="fw-semibold text-dark">{{ g.descripcion }}</div>
+                <small class="text-muted">
+                  {% if g.categoria %}
+                    <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill">{{ g.categoria }}</span>
+                  {% else %}
+                    <span class="text-muted">Sin categoría</span>
+                  {% endif %}
+                </small>
+              </td>
+              <td>
+                <div class="text-muted">
+                  <div>{{ g.fecha.strftime('%d/%m/%Y') }}</div>
+                  <small>{{ g.fecha.strftime('%H:%M') }}</small>
+                </div>
+              </td>
+              <td>
+                <span class="fw-bold text-danger">- ${{ "%.2f"|format(g.monto) }}</span>
+              </td>
+              <td class="pe-4">
+                <div class="d-flex justify-content-center">
+                  <form method="POST" action="{{ url_for('admin.eliminar_gasto', id=g.id) }}" class="d-inline"
+                        onsubmit="return confirm('¿Estás seguro de que deseas eliminar este gasto?');">
+                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 px-3" 
+                            data-bs-toggle="tooltip" title="Eliminar gasto">
+                      <i class="bi bi-trash me-1"></i>Eliminar
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+
+            {% if not ventas and not gastos %}
+            <tr>
+              <td colspan="5" class="text-center py-5">
+                <div class="text-muted">
+                  <i class="bi bi-inboxes display-4 mb-3"></i>
+                  <h5 class="fw-bold">No hay transacciones registradas</h5>
+                  <p class="mb-0">Comienza registrando tu primera venta o gasto.</p>
+                </div>
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVO GASTO MEJORADO -->
+<div class="modal fade" id="modalGasto" tabindex="-1" aria-labelledby="modalGastoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header bg-gradient-danger text-white">
+        <h5 class="modal-title fw-bold">
+          <i class="bi bi-cash-stack me-2"></i>Registrar Nuevo Gasto
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ url_for('admin.nuevo_gasto') }}">
+        <div class="modal-body p-4">
+          <!-- Descripción -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold text-dark mb-2">
+              <i class="bi bi-card-text me-2 text-danger"></i>Descripción del gasto
+            </label>
+            <input type="text" name="descripcion" class="form-control form-control-lg" 
+                   placeholder="Ej: Compra de materiales, pago de servicios..." required>
+          </div>
+
+          <!-- Monto -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold text-dark mb-2">
+              <i class="bi bi-currency-dollar me-2 text-danger"></i>Monto
+            </label>
+            <div class="input-group input-group-lg">
+              <span class="input-group-text bg-light border-end-0">$</span>
+              <input type="number" name="monto" step="0.01" min="0" 
+                     class="form-control border-start-0 ps-2" placeholder="0.00" required>
+            </div>
+          </div>
+
+          <!-- Categoría -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold text-dark mb-2">
+              <i class="bi bi-tags me-2 text-danger"></i>Categoría
+            </label>
+            <select name="categoria" class="form-select form-select-lg">
+              <option value="">Selecciona una categoría</option>
+              <option value="Inventario">Inventario</option>
+              <option value="Servicios">Servicios</option>
+              <option value="Nómina">Nómina</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Mantenimiento">Mantenimiento</option>
+              <option value="Otros">Otros</option>
+            </select>
+            <div class="form-text">
+              <i class="bi bi-info-circle me-1"></i>Clasificar los gastos ayuda en el análisis financiero.
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-outline-secondary rounded-3 px-4" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle me-2"></i>Cancelar
+          </button>
+          <button type="submit" class="btn btn-danger rounded-3 px-4">
+            <i class="bi bi-check-circle me-2"></i>Registrar Gasto
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Tooltips
+  const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  tooltips.forEach(t => new bootstrap.Tooltip(t));
+
+  // Auto-fecha de hoy para filtros
+  const today = new Date().toISOString().split('T')[0];
+  const fechaHasta = document.querySelector('input[name="fecha_hasta"]');
+  if (fechaHasta && !fechaHasta.value) {
+    fechaHasta.value = today;
+  }
+});
+</script>
+
+<style>
+  .bg-gradient-success { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); }
+  .bg-gradient-danger { background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%); }
+  .bg-gradient-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+  .bg-gradient-warning { background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%); }
+
+  .table-hover tbody tr {
+    transition: all 0.25s ease;
+    border-left: 3px solid transparent;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+    border-left-color: #667eea;
+    transform: translateX(2px);
+  }
+
+  .transaction-row:hover {
+    background-color: #f8f9fa !important;
+  }
+
+  .badge-modern {
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .btn-outline-danger:hover {
+    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    border-color: #dc3545;
+    color: white;
+  }
+
+  .btn-outline-info:hover {
+    background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
+    border-color: #17a2b8;
+    color: white;
+  }
+
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+  }
+
+  .bg-opacity-10 {
+    background-opacity: 0.1 !important;
+  }
+</style>
+{% endblock %}

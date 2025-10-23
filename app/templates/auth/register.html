@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+{% block title %}Registro - RopaStore{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-xl-5 col-lg-6 col-md-8">
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <!-- Header con gradiente -->
+        <div class="bg-gradient-success text-white text-center py-4">
+          <div class="bg-white bg-opacity-20 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+               style="width: 80px; height: 80px;">
+            <i class="bi bi-person-plus display-6"></i>
+          </div>
+          <h3 class="fw-bold mb-1">Únete a RopaStore</h3>
+          <p class="mb-0 opacity-75">Crea tu cuenta y descubre la moda</p>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+          <form method="POST" novalidate class="needs-validation" novalidate>
+            <!-- Campo Nombre de Usuario -->
+            <div class="mb-4">
+              <label for="username" class="form-label fw-semibold text-dark mb-2">
+                <i class="bi bi-person me-2 text-success"></i>Nombre de usuario
+              </label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-person-circle text-muted"></i>
+                </span>
+                <input 
+                  type="text" 
+                  class="form-control border-start-0 ps-2" 
+                  id="username" 
+                  name="username" 
+                  placeholder="tu_usuario"
+                  required
+                  minlength="3"
+                >
+              </div>
+              
+              <div class="form-text d-flex align-items-center mt-1">
+                <i class="bi bi-info-circle me-1"></i>Este será tu nombre público en la plataforma.
+              </div>
+            </div>
+
+            <!-- Campo Email -->
+            <div class="mb-4">
+              <label for="email" class="form-label fw-semibold text-dark mb-2">
+                <i class="bi bi-envelope me-2 text-success"></i>Correo electrónico
+              </label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-at text-muted"></i>
+                </span>
+                <input 
+                  type="email" 
+                  class="form-control border-start-0 ps-2" 
+                  id="email" 
+                  name="email" 
+                  placeholder="tu@correo.com"
+                  required
+                >
+              </div>
+             
+            </div>
+
+            <!-- Campo Contraseña -->
+            <div class="mb-4">
+              <label for="password" class="form-label fw-semibold text-dark mb-2">
+                <i class="bi bi-lock me-2 text-success"></i>Contraseña
+              </label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-key text-muted"></i>
+                </span>
+                <input 
+                  type="password" 
+                  class="form-control border-start-0 ps-2" 
+                  id="password" 
+                  name="password" 
+                  placeholder="••••••••"
+                  minlength="6"
+                  required
+                >
+                <button 
+                  class="btn btn-outline-secondary border-start-0" 
+                  type="button" 
+                  id="togglePassword"
+                  tabindex="-1"
+                >
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+              
+              <div class="form-text d-flex align-items-center mt-1">
+                <i class="bi bi-shield-check me-1"></i>Usa una combinación de letras, números y símbolos.
+              </div>
+            </div>
+
+
+            <!-- Botón de registro -->
+            <button type="submit" class="btn btn-success btn-lg w-100 py-3 fw-semibold rounded-3 mb-4">
+              <i class="bi bi-person-plus me-2"></i>Crear Cuenta
+            </button>
+
+            <!-- Enlace a login -->
+            <div class="text-center">
+              <p class="text-muted mb-0">
+                ¿Ya tienes cuenta?
+                <a href="{{ url_for('auth.login') }}" class="text-success text-decoration-none fw-semibold">
+                  Inicia sesión aquí
+                </a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Beneficios de registro -->
+      <div class="row mt-4 g-3">
+        <div class="col-md-6">
+          <div class="card border-0 bg-light rounded-3 p-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                <i class="bi bi-tags text-success"></i>
+              </div>
+              <div>
+                <h6 class="fw-bold mb-1">Ofertas Exclusivas</h6>
+                <p class="small text-muted mb-0">Descuentos solo para miembros</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card border-0 bg-light rounded-3 p-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                <i class="bi bi-lightning text-success"></i>
+              </div>
+              <div>
+                <h6 class="fw-bold mb-1">Compra Rápida</h6>
+                <p class="small text-muted mb-0">Proceso de pago acelerado</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card border-0 bg-light rounded-3 p-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                <i class="bi bi-heart text-success"></i>
+              </div>
+              <div>
+                <h6 class="fw-bold mb-1">Lista de Deseos</h6>
+                <p class="small text-muted mb-0">Guarda tus productos favoritos</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card border-0 bg-light rounded-3 p-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                <i class="bi bi-bell text-success"></i>
+              </div>
+              <div>
+                <h6 class="fw-bold mb-1">Notificaciones</h6>
+                <p class="small text-muted mb-0">Nuevos productos y ofertas</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script para mostrar/ocultar contraseña y validación -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+    
+    // Toggle password visibility
+    togglePassword.addEventListener("click", function() {
+      const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+      passwordInput.setAttribute("type", type);
+      this.innerHTML = type === "password" 
+        ? '<i class="bi bi-eye"></i>' 
+        : '<i class="bi bi-eye-slash"></i>';
+      
+      // Efecto visual al cambiar
+      this.classList.toggle('btn-success', type === 'text');
+      this.classList.toggle('btn-outline-secondary', type === 'password');
+    });
+
+    // Validación de formulario
+    const form = document.querySelector('.needs-validation');
+    form.addEventListener('submit', function(event) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    }, false);
+
+    // Validación en tiempo real para username
+    const usernameInput = document.getElementById('username');
+    usernameInput.addEventListener('input', function() {
+      if (this.value.length < 3) {
+        this.classList.add('is-invalid');
+      } else {
+        this.classList.remove('is-invalid');
+      }
+    });
+  });
+</script>
+
+<style>
+  .bg-gradient-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  }
+
+  .form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(40, 167, 69, 0.4);
+  }
+
+  .input-group-text {
+    background-color: #f8f9fa !important;
+    border-color: #dee2e6;
+  }
+
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+  }
+
+  .invalid-feedback {
+    font-size: 0.875rem;
+  }
+
+  .form-text {
+    font-size: 0.875rem;
+  }
+
+  .benefit-card {
+    transition: all 0.3s ease;
+  }
+
+  .benefit-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+</style>
+{% endblock %}

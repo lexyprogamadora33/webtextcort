@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+{% block title %}Mi Carrito - RopaStore{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <!-- Header del Carrito -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+        <div class="mb-3 mb-md-0">
+          <h1 class="h2 fw-bold text-dark mb-2">
+            <i class="bi bi-cart3 text-primary me-2"></i>Mi Carrito de Compras
+          </h1>
+          <p class="text-muted mb-0">Revisa y gestiona los productos en tu carrito</p>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="{{ url_for('usuario_cp.vaciar_carrito') }}" class="btn btn-outline-danger rounded-3 px-4 py-2">
+            <i class="bi bi-trash me-2"></i>Vaciar Carrito
+          </a>
+          <a href="{{ url_for('usuario_cp.user_dashboard') }}" class="btn btn-outline-primary rounded-3 px-4 py-2">
+            <i class="bi bi-arrow-left me-2"></i>Seguir Comprando
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if carrito %}
+  <div class="row">
+    <!-- Lista de Productos -->
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-header bg-transparent border-0 py-4">
+          <h5 class="fw-bold mb-0">
+            <i class="bi bi-bag-check text-primary me-2"></i>
+            Productos en el Carrito ({{ carrito|length }})
+          </h5>
+        </div>
+        <div class="card-body p-0">
+          {% for item in carrito.values() %}
+          <div class="cart-item border-bottom p-4">
+            <div class="row align-items-center">
+              <!-- Imagen del Producto -->
+              <div class="col-md-2 col-3">
+                {% if item.imagen %}
+                <img src="{{ url_for('usuario_cp.serve_uploaded_file', filename=item.imagen) }}"
+                     class="img-fluid rounded-3 shadow-sm" 
+                     alt="{{ item.nombre }}"
+                     style="height: 80px; width: 100%; object-fit: cover;">
+                {% else %}
+                <div class="bg-light rounded-3 d-flex align-items-center justify-content-center"
+                     style="height: 80px; width: 100%;">
+                  <i class="bi bi-image text-muted"></i>
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Información del Producto -->
+              <div class="col-md-4 col-9">
+                <h6 class="fw-bold text-dark mb-1">{{ item.nombre }}</h6>
+                <p class="text-muted small mb-2">
+                  <i class="bi bi-tag me-1"></i>Código: #{{ item.id }}
+                </p>
+                <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">
+                  ${{ "%.2f"|format(item.precio) }} c/u
+                </span>
+              </div>
+
+              <!-- Cantidad -->
+              <div class="col-md-3 col-6 mt-3 mt-md-0">
+                <div class="d-flex align-items-center">
+                  <span class="text-muted me-3">Cantidad:</span>
+                  <span class="fw-bold text-dark fs-5">{{ item.cantidad }}</span>
+                </div>
+              </div>
+
+              <!-- Subtotal y Acciones -->
+              <div class="col-md-3 col-6 mt-3 mt-md-0">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <span class="fw-bold text-success fs-5">${{ "%.2f"|format(item.precio * item.cantidad) }}</span>
+                    <div class="text-muted small">Subtotal</div>
+                  </div>
+                  <a href="{{ url_for('usuario_cp.eliminar_carrito', producto_id=item.id) }}"
+                     class="btn btn-outline-danger btn-sm rounded-3"
+                     data-bs-toggle="tooltip" title="Eliminar del carrito">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Resumen de Compra -->
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm rounded-4 sticky-top" style="top: 20px;">
+        <div class="card-header bg-transparent border-0 py-4">
+          <h5 class="fw-bold mb-0">
+            <i class="bi bi-receipt text-primary me-2"></i>Resumen de Compra
+          </h5>
+        </div>
+        <div class="card-body">
+          <!-- Detalles del Pedido -->
+          <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted">Productos ({{ carrito|length }})</span>
+              <span class="fw-semibold">${{ "%.2f"|format(total) }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted">Envío</span>
+              <span class="fw-semibold text-success">Gratis</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-muted">Impuestos</span>
+              <span class="fw-semibold">${{ "%.2f"|format(total * 0.15) }}</span>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="fw-bold text-dark">Total</span>
+              <span class="h4 fw-bold text-success">${{ "%.2f"|format(total * 1.15) }}</span>
+            </div>
+          </div>
+
+          <!-- Información de Envío -->
+          <div class="card border-0 bg-light rounded-3 mb-4">
+            <div class="card-body">
+              <h6 class="fw-bold text-dark mb-3">
+                <i class="bi bi-truck text-primary me-2"></i>Envío Gratis
+              </h6>
+              <p class="small text-muted mb-0">
+                <i class="bi bi-check-circle text-success me-1"></i>
+                Recibe tu pedido en 3-5 días hábiles
+              </p>
+            </div>
+          </div>
+
+          <!-- Botón de Finalizar Compra -->
+          <button class="btn btn-primary btn-lg w-100 rounded-3 py-3 mb-3">
+            <i class="bi bi-credit-card me-2"></i>Proceder al Pago
+          </button>
+
+          <!-- Medios de Pago -->
+          <div class="text-center">
+            <p class="small text-muted mb-2">Aceptamos</p>
+            <div class="d-flex justify-content-center gap-3">
+              <i class="bi bi-credit-card-2-front text-muted fs-4"></i>
+              <i class="bi bi-paypal text-primary fs-4"></i>
+              <i class="bi bi-currency-dollar text-success fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Productos Recomendados -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <div class="card border-0 bg-light rounded-4">
+        <div class="card-header bg-transparent border-0 py-4">
+          <h5 class="fw-bold mb-0">
+            <i class="bi bi-stars text-warning me-2"></i>Productos que te pueden interesar
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <!-- Aquí podrías agregar productos recomendados -->
+            <div class="col-12 text-center py-4">
+              <i class="bi bi-arrow-repeat display-4 text-muted mb-3"></i>
+              <p class="text-muted mb-0">Sigue explorando para descubrir más productos increíbles</p>
+              <a href="{{ url_for('usuario_cp.user_dashboard') }}" class="btn btn-outline-primary mt-3 rounded-3">
+                <i class="bi bi-grid me-2"></i>Ver Catálogo Completo
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  <!-- Carrito Vacío -->
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card border-0 bg-light rounded-4 text-center py-5">
+        <div class="card-body">
+          <i class="bi bi-cart-x display-1 text-muted mb-3"></i>
+          <h3 class="fw-bold text-dark mb-3">Tu carrito está vacío</h3>
+          <p class="text-muted mb-4">¡Descubre nuestros increíbles productos y llena tu carrito con estilo!</p>
+          <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a href="{{ url_for('usuario_cp.user_dashboard') }}" class="btn btn-primary rounded-3 px-4 py-2">
+              <i class="bi bi-bag me-2"></i>Explorar Productos
+            </a>
+            <a href="{{ url_for('inicio_cp.inicio_publico') }}" class="btn btn-outline-primary rounded-3 px-4 py-2">
+              <i class="bi bi-house me-2"></i>Volver al Inicio
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Scripts -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Tooltips
+  const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  tooltips.forEach(t => new bootstrap.Tooltip(t));
+
+  // Efecto hover en items del carrito
+  const cartItems = document.querySelectorAll('.cart-item');
+  cartItems.forEach(item => {
+    item.addEventListener('mouseenter', function() {
+      this.style.backgroundColor = '#f8f9fa';
+    });
+    item.addEventListener('mouseleave', function() {
+      this.style.backgroundColor = '';
+    });
+  });
+
+  // Animación para el botón de pago
+  const payButton = document.querySelector('.btn-primary.btn-lg');
+  if (payButton) {
+    payButton.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateY(-2px)';
+    });
+    payButton.addEventListener('mouseleave', function() {
+      this.style.transform = 'translateY(0)';
+    });
+  }
+});
+</script>
+
+<style>
+  /* SOLUCIÓN PARA EL BUG DEL NAVBAR */
+  .navbar {
+    position: fixed;
+    z-index: 1030; /* Bootstrap usa 1030 para navbar fixed */
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  .container-fluid.py-4 {
+    position: relative;
+    z-index: 1;
+    margin-top: 80px; /* Ajusta según la altura de tu navbar */
+  }
+
+  /* CORRECCIÓN PARA LA CARD STICKY */
+  .sticky-top {
+    position: sticky;
+    z-index: 10; /* Menor que el navbar */
+    
+  }
+
+  /* Estilos existentes mejorados */
+  .cart-item {
+    transition: all 0.3s ease;
+  }
+
+  .cart-item:hover {
+    background-color: #f8f9fa;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+  }
+
+  .btn-outline-danger:hover {
+    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    border-color: #dc3545;
+    color: white;
+  }
+
+  .btn-outline-primary:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+  }
+
+  .bg-opacity-10 {
+    background-color: rgba(13, 110, 253, 0.1) !important;
+  }
+
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .cart-item {
+      padding: 1.5rem 1rem;
+    }
+    
+    .sticky-top {
+      position: static;
+      top: auto;
+    }
+    
+    .container-fluid.py-4 {
+      margin-top: 70px; /* Menor en móvil si el navbar es más pequeño */
+    }
+  }
+
+  @media (max-width: 576px) {
+    .container-fluid.py-4 {
+      margin-top: 60px;
+    }
+  }
+</style>
+{% endblock %}

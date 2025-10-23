@@ -1,0 +1,511 @@
+{% extends "base.html" %}
+{% block title %}Gestión de Usuarios - RopaStore{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+  <!-- ENCABEZADO MEJORADO -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+        <div class="mb-3 mb-md-0">
+          <h1 class="h2 fw-bold text-dark mb-2">
+            <i class="bi bi-people-fill text-primary me-2"></i>Gestión de Usuarios
+          </h1>
+          <p class="text-muted mb-0">Administra los usuarios registrados en la plataforma</p>
+        </div>
+        <a href="{{ url_for('admin.nuevo_usuario') }}" class="btn btn-primary px-4 py-2 rounded-3 shadow-sm">
+          <i class="bi bi-person-plus me-2"></i>Nuevo Usuario
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESTADÍSTICAS RÁPIDAS -->
+  <div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 bg-gradient-primary text-white rounded-4 shadow-sm">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="fw-bold mb-1">{{ total_usuarios }}</h3>
+              <p class="mb-0 opacity-75">Total Usuarios</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-3 p-3">
+              <i class="bi bi-people display-6"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 bg-gradient-success text-white rounded-4 shadow-sm">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="fw-bold mb-1">{{ total_admins }}</h3>
+              <p class="mb-0 opacity-75">Administradores</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-3 p-3">
+              <i class="bi bi-shield-check display-6"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 bg-gradient-warning text-white rounded-4 shadow-sm">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="fw-bold mb-1">{{ usuarios_activos }}</h3>
+              <p class="mb-0 opacity-75">Usuarios Activos</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-3 p-3">
+              <i class="bi bi-person-check display-6"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 bg-gradient-info text-white rounded-4 shadow-sm">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="fw-bold mb-1">{{ nuevos_este_mes }}</h3>
+              <p class="mb-0 opacity-75">Nuevos Este Mes</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-3 p-3">
+              <i class="bi bi-person-plus display-6"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARRA DE HERRAMIENTAS -->
+  <div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-6">
+          <div class="input-group input-group-lg">
+            <span class="input-group-text bg-light border-end-0">
+              <i class="bi bi-search text-muted"></i>
+            </span>
+            <input type="text" id="searchInput" class="form-control border-start-0" 
+                   placeholder="Buscar por nombre, email...">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex gap-2 justify-content-md-end">
+            <!-- Botón para abrir el modal de filtros -->
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#filtroModal">
+              <i class="bi bi-funnel me-2"></i>Filtrar Usuarios
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Filtros -->
+  <div class="modal fade" id="filtroModal" tabindex="-1" aria-labelledby="filtroModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="filtroModalLabel">
+            <i class="bi bi-funnel me-2"></i>Filtrar Usuarios
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-4">
+            <!-- Filtro por Rol -->
+            <div class="col-md-6">
+              <h6 class="fw-bold text-dark mb-3">
+                <i class="bi bi-person-badge me-2 text-primary"></i>Filtrar por Rol
+              </h6>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="filtroRol" id="todosRoles" value="all" checked>
+                <label class="form-check-label fw-medium" for="todosRoles">
+                  Todos los usuarios
+                </label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="filtroRol" id="soloAdministradores" value="admin">
+                <label class="form-check-label fw-medium" for="soloAdministradores">
+                  Solo administradores
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="filtroRol" id="soloUsuarios" value="user">
+                <label class="form-check-label fw-medium" for="soloUsuarios">
+                  Solo usuarios normales
+                </label>
+              </div>
+            </div>
+
+            <!-- Filtro por Estado -->
+            <div class="col-md-6">
+              <h6 class="fw-bold text-dark mb-3">
+                <i class="bi bi-toggle-on me-2 text-primary"></i>Filtrar por Estado
+              </h6>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="filtroEstado" id="todosEstados" value="all" checked>
+                <label class="form-check-label fw-medium" for="todosEstados">
+                  Todos los estados
+                </label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="filtroEstado" id="soloActivos" value="active">
+                <label class="form-check-label fw-medium" for="soloActivos">
+                  Solo usuarios activos
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="filtroEstado" id="soloInactivos" value="inactive">
+                <label class="form-check-label fw-medium" for="soloInactivos">
+                  Solo usuarios inactivos
+                </label>
+              </div>
+            </div>
+
+            <!-- Filtro por Fecha -->
+            <div class="col-12">
+              <h6 class="fw-bold text-dark mb-3">
+                <i class="bi bi-calendar me-2 text-primary"></i>Filtrar por Fecha
+              </h6>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="filtroRecientes">
+                <label class="form-check-label fw-medium" for="filtroRecientes">
+                  Mostrar solo usuarios registrados en el último mes
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="aplicarFiltros">
+            <i class="bi bi-check-lg me-2"></i>Aplicar Filtros
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLA DE USUARIOS MEJORADA -->
+  <div class="card border-0 shadow-lg rounded-4 overflow-visible">
+    <div class="card-header bg-transparent border-0 py-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0">
+          <i class="bi bi-list-ul text-primary me-2"></i>Lista de Usuarios Registrados
+        </h5>
+        <div class="d-flex align-items-center gap-3">
+          <span class="badge bg-primary badge-modern px-3 py-2" id="contadorUsuarios">
+            {{ usuarios|length }} usuario{{ 's' if usuarios|length != 1 else '' }}
+          </span>
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="limpiarFiltros">
+            <i class="bi bi-arrow-clockwise me-1"></i>Limpiar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+        <table class="table align-middle mb-0" id="userTable">
+          <thead class="table-light sticky-top shadow-sm">
+            <tr class="text-uppercase small">
+              <th class="ps-4">Usuario</th>
+              <th>Información de Contacto</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Fecha Registro</th>
+              <th class="text-center pe-4">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in usuarios %}
+            <tr class="user-row" data-role="{{ 'admin' if u.is_admin else 'user' }}" 
+                data-date="{{ u.created_at.strftime('%Y-%m-%d') }}" 
+                data-active="{{ 'active' if u.is_active else 'inactive' }}">
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                  <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3"
+                       style="width: 40px; height: 40px;">
+                    <i class="bi bi-person text-primary"></i>
+                  </div>
+                  <div>
+                    <h6 class="fw-bold text-dark mb-0">{{ u.username }}</h6>
+                    <small class="text-muted">ID: #{{ u.id }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div>
+                  <div class="fw-semibold text-dark">{{ u.email }}</div>
+                  {% if u.telefono %}
+                  <small class="text-muted"><i class="bi bi-telephone me-1"></i>{{ u.telefono }}</small>
+                  {% else %}
+                  <small class="text-muted"><i class="bi bi-telephone me-1"></i>No registrado</small>
+                  {% endif %}
+                </div>
+              </td>
+              <td>
+                {% if u.is_admin %}
+                  <span class="badge bg-gradient-danger text-white px-3 py-2 rounded-pill">
+                    <i class="bi bi-shield-check me-1"></i>Administrador
+                  </span>
+                {% else %}
+                  <span class="badge bg-gradient-secondary text-dark px-3 py-2 rounded-pill">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="me-1">
+  <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+</svg>Usuario
+                  </span>
+                {% endif %}
+              </td>
+              <td>
+                {% if u.is_active %}
+                  <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
+                    <i class="bi bi-check-circle me-1"></i>Activo
+                  </span>
+                {% else %}
+                  <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill">
+                    <i class="bi bi-x-circle me-1"></i>Inactivo
+                  </span>
+                {% endif %}
+              </td>
+              <td>
+                <div class="text-muted">
+                  <div>{{ u.created_at.strftime('%d/%m/%Y') }}</div>
+                  <small>{{ u.created_at.strftime('%H:%M') }}</small>
+                </div>
+              </td>
+              <td class="pe-4">
+                <div class="d-flex justify-content-center gap-2">
+                  <a href="{{ url_for('admin.editar_usuario', id=u.id) }}" 
+                     class="btn btn-outline-warning btn-sm rounded-3 px-3" 
+                     data-bs-toggle="tooltip" title="Editar usuario">
+                    <i class="bi bi-pencil me-1"></i>Editar
+                  </a>
+                  {% if u.id != current_user.id %}
+                  <form method="POST" action="{{ url_for('admin.eliminar_usuario', id=u.id) }}" class="d-inline"
+                        onsubmit="return confirm('¿Estás seguro de que deseas eliminar al usuario {{ u.username }}? Esta acción no se puede deshacer.');">
+                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 px-3" 
+                            data-bs-toggle="tooltip" title="Eliminar usuario">
+                      <i class="bi bi-trash me-1"></i>Eliminar
+                    </button>
+                  </form>
+                  {% else %}
+                  <button class="btn btn-outline-secondary btn-sm rounded-3 px-3" disabled
+                          data-bs-toggle="tooltip" title="No puedes eliminarte a ti mismo">
+                    <i class="bi bi-trash me-1"></i>Eliminar
+                  </button>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="text-center py-5">
+                <div class="text-muted">
+                  <i class="bi bi-person-slash display-4 mb-3"></i>
+                  <h5 class="fw-bold">No se encontraron usuarios</h5>
+                  <p class="mb-0">No hay usuarios registrados en el sistema.</p>
+                  <a href="{{ url_for('admin.nuevo_usuario') }}" class="btn btn-primary mt-3">
+                    <i class="bi bi-person-plus me-2"></i>Agregar Primer Usuario
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS MEJORADOS -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('searchInput');
+  const userRows = document.querySelectorAll('.user-row');
+  const contadorUsuarios = document.getElementById('contadorUsuarios');
+  const limpiarFiltrosBtn = document.getElementById('limpiarFiltros');
+  const aplicarFiltrosBtn = document.getElementById('aplicarFiltros');
+  
+  let filtrosActuales = {
+    texto: '',
+    rol: 'all',
+    estado: 'all',
+    recientes: false
+  };
+
+  // Búsqueda en tiempo real
+  searchInput.addEventListener('input', () => {
+    filtrosActuales.texto = searchInput.value.toLowerCase();
+    aplicarFiltros();
+  });
+
+  // Aplicar filtros desde el modal
+  aplicarFiltrosBtn.addEventListener('click', () => {
+    // Obtener valores del modal
+    const filtroRol = document.querySelector('input[name="filtroRol"]:checked').value;
+    const filtroEstado = document.querySelector('input[name="filtroEstado"]:checked').value;
+    const filtroRecientes = document.getElementById('filtroRecientes').checked;
+
+    // Actualizar filtros
+    filtrosActuales.rol = filtroRol;
+    filtrosActuales.estado = filtroEstado;
+    filtrosActuales.recientes = filtroRecientes;
+
+    // Cerrar modal y aplicar filtros
+    const modal = bootstrap.Modal.getInstance(document.getElementById('filtroModal'));
+    modal.hide();
+    aplicarFiltros();
+  });
+
+  // Limpiar todos los filtros
+  limpiarFiltrosBtn.addEventListener('click', () => {
+    // Restablecer controles del modal
+    document.getElementById('todosRoles').checked = true;
+    document.getElementById('todosEstados').checked = true;
+    document.getElementById('filtroRecientes').checked = false;
+    
+    // Limpiar búsqueda
+    searchInput.value = '';
+    
+    // Restablecer filtros
+    filtrosActuales = {
+      texto: '',
+      rol: 'all',
+      estado: 'all',
+      recientes: false
+    };
+    
+    aplicarFiltros();
+  });
+
+  function aplicarFiltros() {
+    let usuariosVisibles = 0;
+    
+    userRows.forEach(row => {
+      const username = row.cells[0]?.textContent.toLowerCase() || '';
+      const email = row.cells[1]?.textContent.toLowerCase() || '';
+      const role = row.dataset.role;
+      const estado = row.dataset.active;
+      const fechaRegistro = new Date(row.dataset.date);
+      
+      // Aplicar filtro de texto
+      const textoMatch = username.includes(filtrosActuales.texto) || 
+                         email.includes(filtrosActuales.texto);
+      
+      // Aplicar filtro de rol
+      const rolMatch = filtrosActuales.rol === 'all' || 
+                       role === filtrosActuales.rol;
+      
+      // Aplicar filtro de estado
+      const estadoMatch = filtrosActuales.estado === 'all' || 
+                          estado === filtrosActuales.estado;
+      
+      // Aplicar filtro de fecha (último mes)
+      const fechaMatch = !filtrosActuales.recientes || esDelUltimoMes(fechaRegistro);
+      
+      // Mostrar u ocultar fila según los filtros
+      const mostrarFila = textoMatch && rolMatch && estadoMatch && fechaMatch;
+      row.style.display = mostrarFila ? '' : 'none';
+      
+      if (mostrarFila) usuariosVisibles++;
+    });
+    
+    // Actualizar contador
+    actualizarContador(usuariosVisibles);
+  }
+
+  function esDelUltimoMes(fecha) {
+    const unMesAtras = new Date();
+    unMesAtras.setMonth(unMesAtras.getMonth() - 1);
+    return fecha >= unMesAtras;
+  }
+
+  function actualizarContador(cantidad) {
+    const texto = cantidad === 1 ? 'usuario' : 'usuarios';
+    contadorUsuarios.textContent = `${cantidad} ${texto}`;
+    
+    // Cambiar color del badge si hay filtros activos
+    const hayFiltrosActivos = 
+      filtrosActuales.texto !== '' || 
+      filtrosActuales.rol !== 'all' || 
+      filtrosActuales.estado !== 'all' || 
+      filtrosActuales.recientes;
+    
+    if (hayFiltrosActivos) {
+      contadorUsuarios.classList.remove('bg-primary');
+      contadorUsuarios.classList.add('bg-success');
+    } else {
+      contadorUsuarios.classList.remove('bg-success');
+      contadorUsuarios.classList.add('bg-primary');
+    }
+  }
+
+  // Tooltips
+  const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  tooltips.forEach(t => new bootstrap.Tooltip(t));
+});
+</script>
+
+<style>
+  .bg-gradient-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+  .bg-gradient-success { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); }
+  .bg-gradient-warning { background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%); }
+  .bg-gradient-info { background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%); }
+  .bg-gradient-danger { background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%); }
+
+  .user-row[data-role="admin"] {
+    background-color: rgba(220, 53, 69, 0.02);
+  }
+
+  .badge-modern {
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .btn-outline-warning:hover {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    border-color: #ffc107;
+    color: #212529;
+  }
+
+  .btn-outline-danger:hover {
+    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    border-color: #dc3545;
+    color: white;
+  }
+
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Estilos para el modal de filtros */
+  .modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+  }
+  
+  .form-check-label {
+    cursor: pointer;
+  }
+</style>
+{% endblock %}

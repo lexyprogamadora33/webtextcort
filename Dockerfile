@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Exponer el puerto que usa la aplicación
-EXPOSE 5050
+EXPOSE 5040
 
 # Comando por defecto para ejecutar la app
 CMD ["python", "main.py"]

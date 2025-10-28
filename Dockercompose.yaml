@@ -8,7 +8,7 @@ services:
     image: ropastore-app
     container_name: ropastore_web
     ports:
-      - "5050:5050"
+      - "5040:5040"
     volumes:
       - .:/app
     environment:

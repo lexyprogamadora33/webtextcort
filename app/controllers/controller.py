@@ -326,6 +326,10 @@ def nuevo_producto():
         stock = int(request.form['stock'])
         categoria_id = request.form.get('categoria_id') or None
         destacado = 'destacado' in request.form
+        
+        # 🔹 Nuevos campos: colores y tallas
+        colores = request.form.get('colores', '')
+        tallas = request.form.get('tallas', '')
 
         imagen_archivo = request.files.get('imagen')
         nombre_imagen = None
@@ -345,7 +349,9 @@ def nuevo_producto():
             stock=stock,
             categoria_id=categoria_id,
             destacado=destacado,
-            imagen=nombre_imagen
+            imagen=nombre_imagen,
+            colores=colores,  # 🔹 Nuevo campo
+            tallas=tallas     # 🔹 Nuevo campo
         )
 
         db.session.add(nuevo)
@@ -355,6 +361,7 @@ def nuevo_producto():
         return redirect(url_for('admin.gestion_productos'))
 
     return render_template('admin/productos/nuevo_producto.html', categorias=categorias)
+
 # =====================================================
 #  EDITAR PRODUCTO
 # =====================================================
@@ -370,6 +377,10 @@ def editar_producto(id):
         producto.stock = int(request.form['stock'])
         producto.categoria_id = request.form.get('categoria_id') or None
         producto.destacado = 'destacado' in request.form
+        
+        # 🔹 Nuevos campos: colores y tallas
+        producto.colores = request.form.get('colores', '')
+        producto.tallas = request.form.get('tallas', '')
 
         imagen_archivo = request.files.get('imagen')
 
@@ -392,8 +403,7 @@ def editar_producto(id):
         flash('✅ Producto actualizado correctamente.', 'success')
         return redirect(url_for('admin.gestion_productos'))
 
-    return render_template('admin/productos/editar_producto.html', producto=producto, categorias=categorias)
-# =====================================================
+    return render_template('admin/productos/editar_producto.html', producto=producto, categorias=categorias)# =====================================================
 #  ELIMINAR PRODUCTO
 # =====================================================
 @admin_cp.route('/admin/eliminar_producto/<int:id>', methods=['POST'])
@@ -652,7 +662,7 @@ def exportar_pdf():
     if os.path.exists(logo_path):
         pdf.image(logo_path, 10, 8, 25)
     pdf.set_font("Arial", "B", 18)
-    pdf.cell(0, 10, "RopaStore", ln=True, align="C")
+    pdf.cell(0, 10, "Textcort", ln=True, align="C")
     pdf.set_font("Arial", "", 12)
     pdf.cell(0, 8, "Reporte Financiero", ln=True, align="C")
     pdf.ln(10)
@@ -711,7 +721,7 @@ def exportar_pdf():
 
     # --- Firma / Pie ---
     pdf.set_font("Arial", "I", 10)
-    pdf.cell(0, 8, "RopaStore - Sistema de Gestión Financiera", ln=True, align="C")
+    pdf.cell(0, 8, "Textcort - Sistema de Gestión Financiera", ln=True, align="C")
 
     # --- Exportar correctamente en memoria ---
     pdf_content = pdf.output(dest="S").encode("latin1")
@@ -756,41 +766,86 @@ def ver_carrito():
     return render_template('users/carrito.html', carrito=carrito, total=total)
 
 # -------------------------------
-# AGREGAR AL CARRITO
+# AGREGAR AL CARRITO (MODIFICADO PARA COLOR Y TALLA)
 # -------------------------------
 @usuario_cp.route('/agregar_carrito/<int:producto_id>', methods=['POST'])
 @login_required
 def agregar_carrito(producto_id):
     producto = Producto.query.get_or_404(producto_id)
     carrito = session.get('carrito', {})
-
-    if str(producto_id) in carrito:
-        carrito[str(producto_id)]['cantidad'] += 1
+    
+    # Obtener color y talla del formulario
+    color = request.form.get('color', 'Único')
+    talla = request.form.get('talla', 'Única')
+    cantidad = int(request.form.get('cantidad', 1))
+    
+    # Crear una clave única que incluya color y talla
+    clave_item = f"{producto_id}_{color}_{talla}"
+    
+    if clave_item in carrito:
+        # Si ya existe el mismo producto con mismo color y talla, aumentar cantidad
+        carrito[clave_item]['cantidad'] += cantidad
     else:
-        carrito[str(producto_id)] = {
+        # Si es nuevo, agregar al carrito
+        carrito[clave_item] = {
             'id': producto.id,
             'nombre': producto.nombre,
             'precio': producto.precio,
             'imagen': producto.imagen,
-            'cantidad': 1
+            'cantidad': cantidad,
+            'color': color,
+            'talla': talla,
+            'clave_unica': clave_item  # Para identificar fácilmente el item
         }
 
     session['carrito'] = carrito
     session.modified = True
-    flash(f"{producto.nombre} agregado al carrito.", "success")
+    flash(f"{producto.nombre} ({color} - {talla}) agregado al carrito.", "success")
     return redirect(url_for('usuario_cp.user_dashboard'))
 
 # -------------------------------
-# ELIMINAR DEL CARRITO
+# ACTUALIZAR CANTIDAD (NUEVA RUTA)
 # -------------------------------
-@usuario_cp.route('/eliminar_carrito/<int:producto_id>')
+@usuario_cp.route('/actualizar_cantidad/<string:clave_unica>/<accion>')
 @login_required
-def eliminar_carrito(producto_id):
+def actualizar_cantidad(clave_unica, accion):
     carrito = session.get('carrito', {})
-    carrito.pop(str(producto_id), None)
-    session['carrito'] = carrito
-    session.modified = True
-    flash("Producto eliminado del carrito.", "warning")
+    
+    if clave_unica in carrito:
+        if accion == 'aumentar':
+            carrito[clave_unica]['cantidad'] += 1
+        elif accion == 'disminuir':
+            if carrito[clave_unica]['cantidad'] > 1:
+                carrito[clave_unica]['cantidad'] -= 1
+            else:
+                # Si la cantidad es 1 y se intenta disminuir, eliminar el producto
+                carrito.pop(clave_unica, None)
+                flash("Producto eliminado del carrito.", "warning")
+                session['carrito'] = carrito
+                session.modified = True
+                return redirect(url_for('usuario_cp.ver_carrito'))
+        
+        session['carrito'] = carrito
+        session.modified = True
+        flash("Cantidad actualizada.", "info")
+    
+    return redirect(url_for('usuario_cp.ver_carrito'))
+
+# -------------------------------
+# ELIMINAR DEL CARRITO (MODIFICADO)
+# -------------------------------
+@usuario_cp.route('/eliminar_carrito/<string:clave_unica>')
+@login_required
+def eliminar_carrito(clave_unica):
+    carrito = session.get('carrito', {})
+    
+    if clave_unica in carrito:
+        nombre_producto = carrito[clave_unica]['nombre']
+        carrito.pop(clave_unica, None)
+        session['carrito'] = carrito
+        session.modified = True
+        flash(f"{nombre_producto} eliminado del carrito.", "warning")
+    
     return redirect(url_for('usuario_cp.ver_carrito'))
 
 # -------------------------------
@@ -802,7 +857,22 @@ def vaciar_carrito():
     session.pop('carrito', None)
     flash("Carrito vaciado.", "info")
     return redirect(url_for('usuario_cp.ver_carrito'))
+
 # -------------------------------
+# PROCESAR PEDIDO (NUEVA RUTA)
+# -------------------------------
+@usuario_cp.route('/procesar_pedido')
+@login_required
+def procesar_pedido():
+    carrito = session.get('carrito', {})
+    
+    if not carrito:
+        flash("Tu carrito está vacío.", "warning")
+        return redirect(url_for('usuario_cp.ver_carrito'))
+    
+    # Aquí iría la lógica para procesar el pedido
+    # Por ahora solo redirigimos a una página de confirmación
+    return render_template('users/confirmacion_pedido.html', carrito=carrito)# -------------------------------
 # RUTA DE INVENTARIO (ADMIN)
 # -------------------------------
 @admin_cp.route('/inventario')
@@ -894,6 +964,3 @@ def nuevos_productos():
         return redirect(url_for('admin.inventario'))
 
     return render_template('admin/inventario/nuevo_producto.html', categorias=categorias)
-
-
-

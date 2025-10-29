@@ -1,43 +1,45 @@
 {% extends "base.html" %}
-{% block title %}Dashboard Admin - RopaStore{% endblock %}
+{% block title %}Dashboard Admin - Texcort Bordados{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
   <!-- Header del Dashboard -->
   <div class="row mb-4">
     <div class="col-12">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h1 class="h2 fw-bold text-dark mb-1">
-            <i class="bi bi-speedometer2 me-2 text-primary"></i>Panel de Control
-          </h1>
-          <p class="text-muted mb-0">Bienvenido, {{ current_user.username }}. Aquí tienes un resumen de tu negocio.</p>
-        </div>
-        <div class="text-end">
-          <span class="badge bg-primary badge-modern">
-            <i class="bi bi-calendar me-1"></i>{{ now.strftime('%d %b %Y') if now else 'Hoy' }}
-          </span>
+      <div class="card border-0 rounded-4 shadow-sm p-4" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <div class="text-white">
+            <h1 class="h2 fw-bold mb-2">
+              <i class="bi bi-speedometer2 me-2"></i>Panel de Control
+            </h1>
+            <p class="mb-0 opacity-90">Bienvenido, {{ current_user.username }}. Aquí tienes un resumen de tu negocio.</p>
+          </div>
+          <div class="text-end">
+            <span class="badge bg-white text-dark px-3 py-2 rounded-pill">
+              <i class="bi bi-calendar me-1"></i>{{ now.strftime('%d %b %Y') if now else 'Hoy' }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Tarjetas de Métricas Principales -->
-  <div class="row g-4 mb-5">
+  <div class="row g-4 mb-4">
     <!-- Total Ventas -->
     <div class="col-xl-3 col-md-6">
-      <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
+      <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden" style="background: var(--bg-primary);">
         <div class="card-body p-4">
           <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <span class="text-muted small fw-semibold">VENTAS TOTALES</span>
-              <h3 class="fw-bold text-dark mt-2">${{ "{:,.2f}".format(total_ventas) }}</h3>
-              <span class="badge bg-success bg-opacity-10 text-success small">
+            <div class="flex-grow-1">
+              <span class="small fw-semibold text-uppercase" style="color: var(--text-secondary);">Ventas Totales</span>
+              <h3 class="fw-bold mt-2 mb-3" style="color: var(--text-primary);">${{ "{:,.2f}".format(total_ventas) }}</h3>
+              <span class="badge rounded-pill" style="background: var(--success-color); color: white;">
                 <i class="bi bi-arrow-up me-1"></i>12.5%
               </span>
             </div>
-            <div class="bg-primary bg-opacity-10 rounded-3 p-3">
-              <i class="bi bi-currency-dollar text-primary display-6"></i>
+            <div class="rounded-3 p-3" style="background: var(--primary-color); opacity: 0.1;">
+              <i class="bi bi-currency-dollar display-6" style="color: var(--primary-color);"></i>
             </div>
           </div>
         </div>
@@ -46,23 +48,23 @@
 
     <!-- Productos Activos -->
     <div class="col-xl-3 col-md-6">
-      <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
+      <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden" style="background: var(--bg-primary);">
         <div class="card-body p-4">
-          <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <span class="text-muted small fw-semibold">PRODUCTOS</span>
-              <h3 class="fw-bold text-dark mt-2">{{ total_productos }}</h3>
-              <span class="badge bg-warning bg-opacity-10 text-warning small">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="flex-grow-1">
+              <span class="small fw-semibold text-uppercase" style="color: var(--text-secondary);">Productos</span>
+              <h3 class="fw-bold mt-2 mb-3" style="color: var(--text-primary);">{{ total_productos }}</h3>
+              <span class="badge rounded-pill" style="background: var(--warning-color); color: white;">
                 {{ (productos_destacados|length) }} destacados
               </span>
             </div>
-            <div class="bg-success bg-opacity-10 rounded-3 p-3">
-              <i class="bi bi-bag-check text-success display-6"></i>
+            <div class="rounded-3 p-3" style="background: var(--success-color); opacity: 0.1;">
+              <i class="bi bi-bag-check display-6" style="color: var(--success-color);"></i>
             </div>
           </div>
         </div>
-        <div class="card-footer bg-transparent border-0 pt-0">
-          <a href="{{ url_for('admin.gestion_productos') }}" class="btn btn-outline-success btn-sm w-100 rounded-3">
+        <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-4">
+          <a href="{{ url_for('admin.gestion_productos') }}" class="btn btn-sm w-100 rounded-pill" style="background: var(--success-color); color: white; border: none;">
             <i class="bi bi-grid me-1"></i>Gestionar Productos
           </a>
         </div>
@@ -71,23 +73,23 @@
 
     <!-- Usuarios Registrados -->
     <div class="col-xl-3 col-md-6">
-      <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
+      <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden" style="background: var(--bg-primary);">
         <div class="card-body p-4">
-          <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <span class="text-muted small fw-semibold">USUARIOS</span>
-              <h3 class="fw-bold text-dark mt-2">{{ total_usuarios }}</h3>
-              <span class="badge bg-info bg-opacity-10 text-info small">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="flex-grow-1">
+              <span class="small fw-semibold text-uppercase" style="color: var(--text-secondary);">Usuarios</span>
+              <h3 class="fw-bold mt-2 mb-3" style="color: var(--text-primary);">{{ total_usuarios }}</h3>
+              <span class="badge rounded-pill" style="background: var(--info-color); color: white;">
                 {{ (usuarios_activos|length) }} activos
               </span>
             </div>
-            <div class="bg-info bg-opacity-10 rounded-3 p-3">
-              <i class="bi bi-people text-info display-6"></i>
+            <div class="rounded-3 p-3" style="background: var(--info-color); opacity: 0.1;">
+              <i class="bi bi-people display-6" style="color: var(--info-color);"></i>
             </div>
           </div>
         </div>
-        <div class="card-footer bg-transparent border-0 pt-0">
-          <a href="{{ url_for('admin.gestion_usuarios') }}" class="btn btn-outline-info btn-sm w-100 rounded-3">
+        <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-4">
+          <a href="{{ url_for('admin.gestion_usuarios') }}" class="btn btn-sm w-100 rounded-pill" style="background: var(--info-color); color: white; border: none;">
             <i class="bi bi-person-gear me-1"></i>Gestionar Usuarios
           </a>
         </div>
@@ -96,23 +98,23 @@
 
     <!-- Pedidos del Mes -->
     <div class="col-xl-3 col-md-6">
-      <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
+      <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden" style="background: var(--bg-primary);">
         <div class="card-body p-4">
-          <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <span class="text-muted small fw-semibold">PEDIDOS ESTE MES</span>
-              <h3 class="fw-bold text-dark mt-2">{{ ventas_mes_actual }}</h3>
-              <span class="badge bg-danger bg-opacity-10 text-danger small">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="flex-grow-1">
+              <span class="small fw-semibold text-uppercase" style="color: var(--text-secondary);">Pedidos Este Mes</span>
+              <h3 class="fw-bold mt-2 mb-3" style="color: var(--text-primary);">{{ ventas_mes_actual }}</h3>
+              <span class="badge rounded-pill" style="background: var(--accent-color); color: white;">
                 <i class="bi bi-clock me-1"></i>En tiempo real
               </span>
             </div>
-            <div class="bg-warning bg-opacity-10 rounded-3 p-3">
-              <i class="bi bi-cart-check text-warning display-6"></i>
+            <div class="rounded-3 p-3" style="background: var(--warning-color); opacity: 0.1;">
+              <i class="bi bi-cart-check display-6" style="color: var(--warning-color);"></i>
             </div>
           </div>
         </div>
-        <div class="card-footer bg-transparent border-0 pt-0">
-          <a href="{{ url_for('admin.gestion_ventas') }}" class="btn btn-outline-warning btn-sm w-100 rounded-3">
+        <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-4">
+          <a href="{{ url_for('admin.gestion_ventas') }}" class="btn btn-sm w-100 rounded-pill" style="background: var(--warning-color); color: white; border: none;">
             <i class="bi bi-receipt me-1"></i>Ver Ventas
           </a>
         </div>
@@ -120,22 +122,22 @@
     </div>
   </div>
 
-  <div class="row g-4">
+  <div class="row g-4 mb-4">
     <!-- Gráfico de Ventas -->
     <div class="col-xl-8">
-      <div class="card border-0 shadow-sm rounded-4 h-100">
+      <div class="card border-0 shadow-sm rounded-4 h-100" style="background: var(--bg-primary);">
         <div class="card-header bg-transparent border-0 py-4">
-          <div class="d-flex justify-content-between align-items-center">
-            <h5 class="fw-bold mb-0">
-              <i class="bi bi-bar-chart-line text-primary me-2"></i>Análisis de Ventas Mensuales
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <h5 class="fw-bold mb-0" style="color: var(--text-primary);">
+              <i class="bi bi-bar-chart-line me-2" style="color: var(--primary-color);"></i>Análisis de Ventas Mensuales
             </h5>
             <div class="dropdown">
-              <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <button class="btn btn-sm dropdown-toggle rounded-pill" type="button" data-bs-toggle="dropdown" style="background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
                 <i class="bi bi-filter me-1"></i>Filtrar
               </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">2024</a></li>
-                <li><a class="dropdown-item" href="#">2023</a></li>
+              <ul class="dropdown-menu rounded-3 shadow border-0" style="background: var(--bg-primary);">
+                <li><a class="dropdown-item rounded-2" href="#" style="color: var(--text-primary);">2024</a></li>
+                <li><a class="dropdown-item rounded-2" href="#" style="color: var(--text-primary);">2023</a></li>
               </ul>
             </div>
           </div>
@@ -148,62 +150,62 @@
 
     <!-- Métricas Rápidas -->
     <div class="col-xl-4">
-      <div class="card border-0 shadow-sm rounded-4 h-100">
+      <div class="card border-0 shadow-sm rounded-4 h-100" style="background: var(--bg-primary);">
         <div class="card-header bg-transparent border-0 py-4">
-          <h5 class="fw-bold mb-0">
-            <i class="bi bi-graph-up text-success me-2"></i>Métricas Rápidas
+          <h5 class="fw-bold mb-0" style="color: var(--text-primary);">
+            <i class="bi bi-graph-up me-2" style="color: var(--success-color);"></i>Métricas Rápidas
           </h5>
         </div>
         <div class="card-body">
           <div class="row g-3">
             <!-- Ticket Promedio -->
             <div class="col-12">
-              <div class="d-flex align-items-center p-3 bg-light rounded-3">
-                <div class="bg-primary bg-opacity-10 rounded-2 p-2 me-3">
-                  <i class="bi bi-receipt text-primary"></i>
+              <div class="d-flex align-items-center p-3 rounded-3" style="background: var(--bg-secondary);">
+                <div class="rounded-2 p-2 me-3" style="background: var(--primary-color); opacity: 0.1;">
+                  <i class="bi bi-receipt" style="color: var(--primary-color);"></i>
                 </div>
                 <div class="flex-grow-1">
-                  <span class="text-muted small">Ticket Promedio</span>
-                  <h6 class="fw-bold mb-0">${{ "{:,.2f}".format(ticket_promedio) }}</h6>
+                  <span class="small" style="color: var(--text-secondary);">Ticket Promedio</span>
+                  <h6 class="fw-bold mb-0" style="color: var(--text-primary);">${{ "{:,.2f}".format(ticket_promedio) }}</h6>
                 </div>
               </div>
             </div>
 
             <!-- Productos Bajos Stock -->
             <div class="col-12">
-              <div class="d-flex align-items-center p-3 bg-light rounded-3">
-                <div class="bg-warning bg-opacity-10 rounded-2 p-2 me-3">
-                  <i class="bi bi-exclamation-triangle text-warning"></i>
+              <div class="d-flex align-items-center p-3 rounded-3" style="background: var(--bg-secondary);">
+                <div class="rounded-2 p-2 me-3" style="background: var(--warning-color); opacity: 0.1;">
+                  <i class="bi bi-exclamation-triangle" style="color: var(--warning-color);"></i>
                 </div>
                 <div class="flex-grow-1">
-                  <span class="text-muted small">Stock Bajo</span>
-                  <h6 class="fw-bold mb-0">{{ productos_bajo_stock }} productos</h6>
+                  <span class="small" style="color: var(--text-secondary);">Stock Bajo</span>
+                  <h6 class="fw-bold mb-0" style="color: var(--text-primary);">{{ productos_bajo_stock }} productos</h6>
                 </div>
               </div>
             </div>
 
             <!-- Categorías Activas -->
             <div class="col-12">
-              <div class="d-flex align-items-center p-3 bg-light rounded-3">
-                <div class="bg-info bg-opacity-10 rounded-2 p-2 me-3">
-                  <i class="bi bi-tags text-info"></i>
+              <div class="d-flex align-items-center p-3 rounded-3" style="background: var(--bg-secondary);">
+                <div class="rounded-2 p-2 me-3" style="background: var(--info-color); opacity: 0.1;">
+                  <i class="bi bi-tags" style="color: var(--info-color);"></i>
                 </div>
                 <div class="flex-grow-1">
-                  <span class="text-muted small">Categorías</span>
-                  <h6 class="fw-bold mb-0">{{ total_categorias }} activas</h6>
+                  <span class="small" style="color: var(--text-secondary);">Categorías</span>
+                  <h6 class="fw-bold mb-0" style="color: var(--text-primary);">{{ total_categorias }} activas</h6>
                 </div>
               </div>
             </div>
 
             <!-- Tasa Conversión -->
             <div class="col-12">
-              <div class="d-flex align-items-center p-3 bg-light rounded-3">
-                <div class="bg-success bg-opacity-10 rounded-2 p-2 me-3">
-                  <i class="bi bi-arrow-repeat text-success"></i>
+              <div class="d-flex align-items-center p-3 rounded-3" style="background: var(--bg-secondary);">
+                <div class="rounded-2 p-2 me-3" style="background: var(--success-color); opacity: 0.1;">
+                  <i class="bi bi-arrow-repeat" style="color: var(--success-color);"></i>
                 </div>
                 <div class="flex-grow-1">
-                  <span class="text-muted small">Tasa Conversión</span>
-                  <h6 class="fw-bold mb-0">24.8%</h6>
+                  <span class="small" style="color: var(--text-secondary);">Tasa Conversión</span>
+                  <h6 class="fw-bold mb-0" style="color: var(--text-primary);">24.8%</h6>
                 </div>
               </div>
             </div>
@@ -214,38 +216,38 @@
   </div>
 
   <!-- Acciones Rápidas -->
-  <div class="row mt-4">
+  <div class="row">
     <div class="col-12">
-      <div class="card border-0 shadow-sm rounded-4">
+      <div class="card border-0 shadow-sm rounded-4" style="background: var(--bg-primary);">
         <div class="card-header bg-transparent border-0 py-4">
-          <h5 class="fw-bold mb-0">
-            <i class="bi bi-lightning text-warning me-2"></i>Acciones Rápidas
+          <h5 class="fw-bold mb-0" style="color: var(--text-primary);">
+            <i class="bi bi-lightning me-2" style="color: var(--warning-color);"></i>Acciones Rápidas
           </h5>
         </div>
         <div class="card-body">
           <div class="row g-3">
-            <div class="col-md-3 col-6">
-              <a href="{{ url_for('admin.nuevo_producto') }}" class="btn btn-outline-primary w-100 rounded-3 py-3">
-                <i class="bi bi-plus-circle display-6 d-block mb-2"></i>
-                Nuevo Producto
+            <div class="col-lg-3 col-md-6">
+              <a href="{{ url_for('admin.nuevo_producto') }}" class="btn w-100 rounded-3 py-4 border-0 shadow-sm" style="background: var(--bg-secondary); color: var(--text-primary);">
+                <i class="bi bi-plus-circle display-6 d-block mb-2" style="color: var(--primary-color);"></i>
+                <span class="fw-semibold">Nuevo Producto</span>
               </a>
             </div>
-            <div class="col-md-3 col-6">
-              <a href="{{ url_for('admin.nueva_venta') }}" class="btn btn-outline-success w-100 rounded-3 py-3">
-                <i class="bi bi-cart-plus display-6 d-block mb-2"></i>
-                Nueva Venta
+            <div class="col-lg-3 col-md-6">
+              <a href="{{ url_for('admin.nueva_venta') }}" class="btn w-100 rounded-3 py-4 border-0 shadow-sm" style="background: var(--bg-secondary); color: var(--text-primary);">
+                <i class="bi bi-cart-plus display-6 d-block mb-2" style="color: var(--success-color);"></i>
+                <span class="fw-semibold">Nueva Venta</span>
               </a>
             </div>
-            <div class="col-md-3 col-6">
-              <a href="{{ url_for('admin.gestion_ventas') }}#gastos" class="btn btn-outline-warning w-100 rounded-3 py-3">
-                <i class="bi bi-cash-coin display-6 d-block mb-2"></i>
-                Registrar Gasto
+            <div class="col-lg-3 col-md-6">
+              <a href="{{ url_for('admin.gestion_ventas') }}#gastos" class="btn w-100 rounded-3 py-4 border-0 shadow-sm" style="background: var(--bg-secondary); color: var(--text-primary);">
+                <i class="bi bi-cash-coin display-6 d-block mb-2" style="color: var(--warning-color);"></i>
+                <span class="fw-semibold">Registrar Gasto</span>
               </a>
             </div>
-            <div class="col-md-3 col-6">
-              <a href="{{ url_for('admin.exportar_pdf') }}" class="btn btn-outline-info w-100 rounded-3 py-3">
-                <i class="bi bi-file-pdf display-6 d-block mb-2"></i>
-                Exportar PDF
+            <div class="col-lg-3 col-md-6">
+              <a href="{{ url_for('admin.exportar_pdf') }}" class="btn w-100 rounded-3 py-4 border-0 shadow-sm" style="background: var(--bg-secondary); color: var(--text-primary);">
+                <i class="bi bi-file-pdf display-6 d-block mb-2" style="color: var(--accent-color);"></i>
+                <span class="fw-semibold">Exportar PDF</span>
               </a>
             </div>
           </div>
@@ -258,6 +260,13 @@
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+  // Get CSS variables for chart colors
+  const rootStyles = getComputedStyle(document.documentElement);
+  const primaryColor = rootStyles.getPropertyValue('--primary-color').trim();
+  const textPrimary = rootStyles.getPropertyValue('--text-primary').trim();
+  const textSecondary = rootStyles.getPropertyValue('--text-secondary').trim();
+  const borderColor = rootStyles.getPropertyValue('--border-color').trim();
+
   const ctx = document.getElementById('ventasChart');
   const ventasChart = new Chart(ctx, {
     type: 'bar',
@@ -266,8 +275,8 @@
       datasets: [{
         label: 'Ventas ($)',
         data: {{ montos | tojson }},
-        backgroundColor: 'rgba(102, 126, 234, 0.8)',
-        borderColor: 'rgba(102, 126, 234, 1)',
+        backgroundColor: primaryColor + 'CC',
+        borderColor: primaryColor,
         borderWidth: 2,
         borderRadius: 8,
         borderSkipped: false,
@@ -281,13 +290,14 @@
           display: false 
         },
         tooltip: {
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          backgroundColor: 'rgba(0, 0, 0, 0.9)',
           titleColor: '#fff',
           bodyColor: '#fff',
-          borderColor: '#667eea',
+          borderColor: primaryColor,
           borderWidth: 1,
           cornerRadius: 8,
           displayColors: false,
+          padding: 12,
           callbacks: {
             label: function(context) {
               return `Ventas: $${context.parsed.y.toLocaleString()}`;
@@ -299,9 +309,11 @@
         y: {
           beginAtZero: true,
           grid: {
-            color: 'rgba(0, 0, 0, 0.05)'
+            color: borderColor,
+            drawBorder: false
           },
           ticks: {
+            color: textSecondary,
             callback: function(value) {
               return '$' + value.toLocaleString();
             }
@@ -310,6 +322,9 @@
         x: {
           grid: {
             display: false
+          },
+          ticks: {
+            color: textSecondary
           }
         }
       },
@@ -320,7 +335,7 @@
       animations: {
         tension: {
           duration: 1000,
-          easing: 'linear'
+          easing: 'easeInOutQuart'
         }
       }
     }
@@ -334,35 +349,16 @@
 
   .card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+    box-shadow: var(--shadow-lg) !important;
   }
 
-  .bg-opacity-10 {
-    background-opacity: 0.1 !important;
+  .dropdown-item:hover {
+    background: var(--bg-secondary) !important;
   }
 
-  .btn-outline-primary:hover {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-color: #667eea;
-    color: white;
-  }
-
-  .btn-outline-success:hover {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    border-color: #28a745;
-    color: white;
-  }
-
-  .btn-outline-warning:hover {
-    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
-    border-color: #ffc107;
-    color: white;
-  }
-
-  .btn-outline-info:hover {
-    background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
-    border-color: #17a2b8;
-    color: white;
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
   }
 </style>
 {% endblock %}

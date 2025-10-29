@@ -36,7 +36,6 @@
                            placeholder="Ej: Camiseta Básica"
                            required>
                   </div>
-                  
                 </div>
 
                 <!-- Precio -->
@@ -54,7 +53,6 @@
                            placeholder="0.00"
                            required>
                   </div>
-                  
                 </div>
 
                 <!-- Stock -->
@@ -73,7 +71,6 @@
                            placeholder="0"
                            required>
                   </div>
-                  
                 </div>
 
                 <!-- Categoría -->
@@ -87,23 +84,61 @@
                       <option value="{{ c.id }}">{{ c.nombre }}</option>
                     {% endfor %}
                   </select>
-                  
                 </div>
               </div>
 
               <!-- Columna derecha - Imagen y detalles -->
               <div class="col-lg-6">
+                <!-- 🔹 NUEVO: Colores Disponibles -->
+                <div class="mb-4">
+                  <label for="colores" class="form-label fw-semibold text-dark mb-2">
+                    <i class="bi bi-palette me-2 text-primary"></i>Colores Disponibles
+                  </label>
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-light border-end-0">
+                      <i class="bi bi-circle-fill text-muted"></i>
+                    </span>
+                    <input type="text" 
+                           name="colores" 
+                           class="form-control border-start-0 ps-2" 
+                           placeholder="Ej: Negro, Blanco, Rojo, Azul"
+                           title="Separar colores con comas">
+                  </div>
+                  <div class="form-text d-flex align-items-center mt-1">
+                    <i class="bi bi-info-circle me-1"></i>Separa los colores con comas. Ej: Negro, Blanco, Rojo
+                  </div>
+                </div>
+
+                <!-- 🔹 NUEVO: Tallas Disponibles -->
+                <div class="mb-4">
+                  <label for="tallas" class="form-label fw-semibold text-dark mb-2">
+                    <i class="bi bi-rulers me-2 text-primary"></i>Tallas Disponibles
+                  </label>
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-light border-end-0">
+                      <i class="bi bi-aspect-ratio text-muted"></i>
+                    </span>
+                    <input type="text" 
+                           name="tallas" 
+                           class="form-control border-start-0 ps-2" 
+                           placeholder="Ej: XS, S, M, L, XL"
+                           title="Separar tallas con comas">
+                  </div>
+                  <div class="form-text d-flex align-items-center mt-1">
+                    <i class="bi bi-info-circle me-1"></i>Separa las tallas con comas. Ej: XS, S, M, L, XL
+                  </div>
+                </div>
+
                 <!-- Descripción -->
                 <div class="mb-4">
                   <label for="descripcion" class="form-label fw-semibold text-dark mb-2">
                     <i class="bi bi-text-paragraph me-2 text-primary"></i>Descripción
                   </label>
                   <textarea name="descripcion" 
-                            rows="5" 
+                            rows="4" 
                             class="form-control shadow-sm" 
                             placeholder="Describe las características, materiales y beneficios del producto..."
                             required></textarea>
-                  
                   <div class="form-text d-flex align-items-center mt-1">
                     <i class="bi bi-lightbulb me-1"></i>Una buena descripción ayuda a los clientes a tomar mejores decisiones.
                   </div>
@@ -127,14 +162,45 @@
                              src="#" 
                              alt="Vista previa de la imagen" 
                              class="img-fluid rounded-3 shadow-sm d-none" 
-                             style="max-height: 200px; object-fit: cover;">
-                        <div id="noPreview" class="text-muted py-4">
+                             style="max-height: 150px; object-fit: cover;">
+                        <div id="noPreview" class="text-muted py-3">
                           <i class="bi bi-image display-4 mb-2"></i>
                           <p class="mb-0 small">Vista previa de la imagen</p>
                         </div>
                       </div>
                       <div class="form-text text-center mt-2">
                         <i class="bi bi-info-circle me-1"></i>Formatos: JPG, PNG, GIF. Tamaño máximo: 5MB
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 🔹 NUEVA SECCIÓN: Vista previa de colores y tallas -->
+            <div class="row mt-2">
+              <div class="col-12">
+                <div class="card border-0 bg-light rounded-3">
+                  <div class="card-body">
+                    <h6 class="fw-semibold mb-3">
+                      <i class="bi bi-eye me-2 text-primary"></i>Vista Previa de Opciones
+                    </h6>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="mb-3">
+                          <label class="form-label small fw-semibold">Colores:</label>
+                          <div id="colores-preview" class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-secondary">Ingresa colores arriba</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="mb-3">
+                          <label class="form-label small fw-semibold">Tallas:</label>
+                          <div id="tallas-preview" class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-secondary">Ingresa tallas arriba</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -165,7 +231,6 @@
               </div>
             </div>
 
-
             <!-- Botones de acción -->
             <div class="d-flex justify-content-between align-items-center pt-4 mt-4 border-top">
               <a href="{{ url_for('admin.gestion_productos') }}" class="btn btn-outline-secondary rounded-3 px-4 py-2">
@@ -181,7 +246,6 @@
     </div>
   </div>
 </div>
-
 
 <!-- Scripts mejorados -->
 <script>
@@ -204,9 +268,55 @@ function previewImage(event) {
   }
 }
 
+// Función para actualizar la vista previa de colores y tallas
+function actualizarVistaPrevia() {
+  const coloresInput = document.querySelector('input[name="colores"]');
+  const tallasInput = document.querySelector('input[name="tallas"]');
+  const coloresPreview = document.getElementById('colores-preview');
+  const tallasPreview = document.getElementById('tallas-preview');
+  
+  // Actualizar colores
+  if (coloresInput.value.trim()) {
+    const colores = coloresInput.value.split(',').map(color => color.trim()).filter(color => color);
+    coloresPreview.innerHTML = '';
+    colores.forEach(color => {
+      const badge = document.createElement('span');
+      badge.className = 'badge bg-primary';
+      badge.textContent = color;
+      coloresPreview.appendChild(badge);
+    });
+  } else {
+    coloresPreview.innerHTML = '<span class="badge bg-secondary">Ingresa colores arriba</span>';
+  }
+  
+  // Actualizar tallas
+  if (tallasInput.value.trim()) {
+    const tallas = tallasInput.value.split(',').map(talla => talla.trim()).filter(talla => talla);
+    tallasPreview.innerHTML = '';
+    tallas.forEach(talla => {
+      const badge = document.createElement('span');
+      badge.className = 'badge bg-success';
+      badge.textContent = talla;
+      tallasPreview.appendChild(badge);
+    });
+  } else {
+    tallasPreview.innerHTML = '<span class="badge bg-secondary">Ingresa tallas arriba</span>';
+  }
+}
+
 // Validación de formulario
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.querySelector('.needs-validation');
+  
+  // Event listeners para vista previa de colores y tallas
+  const coloresInput = document.querySelector('input[name="colores"]');
+  const tallasInput = document.querySelector('input[name="tallas"]');
+  
+  coloresInput.addEventListener('input', actualizarVistaPrevia);
+  tallasInput.addEventListener('input', actualizarVistaPrevia);
+  
+  // Inicializar vista previa
+  actualizarVistaPrevia();
   
   form.addEventListener('submit', function(event) {
     if (!form.checkValidity()) {
@@ -300,6 +410,13 @@ document.addEventListener('DOMContentLoaded', function() {
     background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
     border-color: #6c757d;
     color: white;
+  }
+
+  /* Estilos para la vista previa de colores y tallas */
+  #colores-preview .badge,
+  #tallas-preview .badge {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
   }
 </style>
 {% endblock %}

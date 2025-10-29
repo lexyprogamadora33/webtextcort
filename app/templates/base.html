@@ -1,24 +1,66 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Texcort - Moda y Estilo{% endblock %}</title>
+  <title>{% block title %}Texcort - Bordados y Prendas Personalizadas{% endblock %}</title>
 
   <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
-    :root {
-      --primary-gradient: linear-gradient(135deg, #f4adf9ff 0%, #cd9cffff 100%);
-      --secondary-gradient: linear-gradient(135deg, #ef78dcff 0%, #e8a2ffff 100%);
-      --dark-gradient: linear-gradient(135deg, #a15cc6ff 0%, #e4ace3ff 100%);
+    /* Professional color scheme with dark blue and black tones */
+    :root[data-theme="light"] {
+      --primary-color: #1e3a8a;
+      --primary-dark: #1e293b;
+      --primary-light: #3b82f6;
+      --secondary-color: #64748b;
+      --accent-color: #0ea5e9;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    }
+
+    :root[data-theme="dark"] {
+      --primary-color: #3b82f6;
+      --primary-dark: #1e293b;
+      --primary-light: #60a5fa;
+      --secondary-color: #94a3b8;
+      --accent-color: #38bdf8;
+      --success-color: #34d399;
+      --warning-color: #fbbf24;
+      --danger-color: #f87171;
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #64748b;
+      --border-color: #334155;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3);
+    }
+
+    * {
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
 
     body {
-      background-color: #cda5d3ff;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -28,90 +70,175 @@
       flex: 1;
     }
 
+    /* Professional navbar with dark theme */
     .navbar {
-      background: var(--dark-gradient) !important;
-      box-shadow: 0 4px 12px rgba(29, 23, 23, 0.15);
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%) !important;
+      box-shadow: var(--shadow-md);
       padding: 1rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .navbar-brand {
       font-weight: 800;
       letter-spacing: 0.5px;
       font-size: 1.5rem;
-      background: linear-gradient(45deg, #f4f4f4ff, #ffffffff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #ffffff !important;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .navbar-brand i {
+      font-size: 1.75rem;
+      color: var(--accent-color);
     }
 
     .nav-link {
       font-weight: 500;
+      color: rgba(255, 255, 255, 0.9) !important;
       transition: all 0.3s ease;
       border-radius: 8px;
-      margin: 0 2px;
+      margin: 0 4px;
+      padding: 0.5rem 1rem !important;
     }
 
     .nav-link:hover {
-      background: rgba(255, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff !important;
       transform: translateY(-1px);
     }
 
+    .nav-link.active {
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff !important;
+    }
+
+    /* Theme toggle button */
+    .theme-toggle {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+
     .dropdown-menu {
-      border: none;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-lg);
       border-radius: 12px;
       margin-top: 10px;
     }
 
     .dropdown-item {
+      color: var(--text-primary);
       border-radius: 6px;
       margin: 2px 8px;
       transition: all 0.2s ease;
     }
 
     .dropdown-item:hover {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white !important;
+      background: var(--primary-color);
+      color: #ffffff !important;
       transform: translateX(5px);
+    }
+
+    .dropdown-header {
+      color: var(--text-secondary) !important;
+    }
+
+    .dropdown-divider {
+      border-color: var(--border-color);
     }
 
     .alert {
       border: none;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: var(--shadow-sm);
     }
 
+    /* Professional footer with company info */
     footer {
-      background: var(--dark-gradient);
-      color: white;
-      padding: 3rem 0 2rem;
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+      color: #ffffff;
+      padding: 3rem 0 1.5rem;
       margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .footer-content {
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding-bottom: 2rem;
       margin-bottom: 2rem;
     }
 
-    /* Efectos globales para cards */
+    .footer-link {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .footer-link:hover {
+      color: #ffffff;
+      transform: translateX(5px);
+    }
+
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      background: var(--accent-color);
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+    }
+
+    /* Card styles */
+    .card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
     .card-hover {
       transition: all 0.3s ease;
     }
 
     .card-hover:hover {
       transform: translateY(-5px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+      box-shadow: var(--shadow-lg);
     }
 
-    /* Badges modernos */
+    /* Badge styles */
     .badge-modern {
       border-radius: 20px;
       font-weight: 600;
       padding: 6px 12px;
     }
 
-    /* Botones mejorados */
+    /* Button styles */
     .btn-modern {
       border-radius: 10px;
       font-weight: 600;
@@ -121,17 +248,43 @@
 
     .btn-modern:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-light);
+    }
+
+    /* Responsive improvements */
+    @media (max-width: 768px) {
+      .navbar-brand {
+        font-size: 1.25rem;
+      }
+
+      .nav-link {
+        padding: 0.5rem !important;
+      }
+
+      footer {
+        padding: 2rem 0 1rem;
+      }
     }
   </style>
 </head>
 <body>
 
-<!-- NAVBAR MEJORADO -->
+<!-- Updated navbar with Texcort branding and theme toggle -->
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
   <div class="container">
-    <a class="navbar-brand d-flex align-items-center" >
-      <i class="bi bi-gem me-2"></i>RopaStore
+    <a class="navbar-brand" href="{{ url_for('inicio_cp.inicio_publico') }}">
+      <i class="bi bi-scissors"></i>
+      <span>Texcort</span>
     </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
@@ -141,7 +294,7 @@
     <div class="collapse navbar-collapse" id="navbarContent">
 
       {% if current_user.is_authenticated and current_user.is_admin %}
-        <!-- 🔹 NAVBAR ADMIN MEJORADO -->
+        <!-- Admin Navigation -->
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <a class="nav-link d-flex align-items-center" href="{{ url_for('admin.dashboard') }}">
@@ -163,18 +316,15 @@
               <i class="bi bi-graph-up me-1"></i> Ventas
             </a>
           </li>
-          <a class="nav-link d-flex align-items-center nav-link-inventory" href="{{ url_for('admin.inventario') }}">
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" href="{{ url_for('admin.inventario') }}">
               <i class="bi bi-clipboard-data me-1"></i> Inventario
-              {% if productos_stock_bajo and productos_stock_bajo > 0 %}
-                <span class="badge bg-danger badge-modern ms-1" id="stock-bajo-badge">
-                  {{ productos_stock_bajo }}
-                </span>
-              {% endif %}
             </a>
+          </li>
         </ul>
 
       {% elif current_user.is_authenticated %}
-        <!-- 🔹 NAVBAR USUARIO AUTENTICADO MEJORADO -->
+        <!-- User Navigation -->
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <a class="nav-link d-flex align-items-center" href="{{ url_for('usuario_cp.user_dashboard') }}">
@@ -189,28 +339,38 @@
               {% endif %}
             </a>
           </li>
-          
         </ul>
 
       {% else %}
-        <!-- 🔹 NAVBAR VISITANTE MEJORADO -->
+        <!-- Public Navigation -->
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link d-flex align-items-center" href="{{ url_for('inicio_cp.inicio_publico') }}#productos-destacados">
-              <i class="bi bi-star me-1"></i> Destacados
+            <a class="nav-link d-flex align-items-center" href="{{ url_for('inicio_cp.inicio_publico') }}">
+              <i class="bi bi-house me-1"></i> Inicio
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link d-flex align-items-center" href="{{ url_for('inicio_cp.inicio_publico') }}#categorias">
-              <i class="bi bi-tags me-1"></i> Categorías
+            <a class="nav-link d-flex align-items-center" href="{{ url_for('inicio_cp.inicio_publico') }}#sobre-nosotros">
+              <i class="bi bi-info-circle me-1"></i> Sobre Nosotros
             </a>
           </li>
-          
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" href="{{ url_for('inicio_cp.inicio_publico') }}#contacto">
+              <i class="bi bi-envelope me-1"></i> Contacto
+            </a>
+          </li>
         </ul>
       {% endif %}
 
-      <!-- 🔹 MENU DE USUARIO MEJORADO (DERECHA) -->
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+      <!-- Right side menu -->
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+        <!-- Theme Toggle -->
+        <li class="nav-item me-2">
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+            <i class="bi bi-sun-fill" id="themeIcon"></i>
+          </button>
+        </li>
+
         {% if current_user.is_authenticated %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userMenu" role="button" data-bs-toggle="dropdown">
@@ -236,7 +396,6 @@
                     {% endif %}
                   </a>
                 </li>
-                
                 <li><hr class="dropdown-divider mx-3"></li>
               {% endif %}
               <li>
@@ -250,7 +409,7 @@
           <li class="nav-item">
             <a class="nav-link d-flex align-items-center btn-modern" 
                href="{{ url_for('auth.login') }}"
-               style="background: var(--secondary-gradient); color: white; padding: 8px 16px;">
+               style="background: var(--accent-color); color: white; padding: 8px 16px;">
               <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
             </a>
           </li>
@@ -268,7 +427,7 @@
   </div>
 </nav>
 
-<!-- CONTENIDO PRINCIPAL -->
+<!-- Main Content -->
 <main class="flex-grow-1">
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -297,98 +456,142 @@
   {% block content %}{% endblock %}
 </main>
 
-<!-- FOOTER MEJORADO -->
-{% if not current_user.is_authenticated or not current_user.is_admin %}
+<!-- Professional footer with Texcort company information -->
 <footer>
   <div class="container">
     <div class="footer-content">
-      <div class="row">
-        <div class="col-lg-4 mb-4">
-          <h5 class="fw-bold mb-3">
-            <i class="bi bi-gem me-2"></i>RopaStore
+      <div class="row g-4">
+        <!-- Company Info -->
+        <div class="col-lg-4 col-md-6">
+          <h5 class="fw-bold mb-3 d-flex align-items-center">
+            <i class="bi bi-scissors me-2"></i>Texcort
           </h5>
-          <p class="text-light opacity-75">
-            Tu destino de moda favorito. Encuentra las últimas tendencias y estilos únicos para toda la familia.
+          <p class="text-light opacity-75 mb-3">
+            Empresa colombiana especializada en bordados y prendas personalizadas. Gorras, busos y dotaciones empresariales de alta calidad.
           </p>
-          <div class="d-flex gap-3">
-            <a href="#" class="text-light opacity-75 hover-lift">
+          <div class="d-flex gap-2">
+            <a href="https://www.facebook.com/share/14MC2PR1u7Q/" target="_blank" class="social-icon" title="Facebook">
               <i class="bi bi-facebook"></i>
             </a>
-            <a href="#" class="text-light opacity-75 hover-lift">
+            <a href="https://www.instagram.com/bordados_texcort" target="_blank" class="social-icon" title="Instagram">
               <i class="bi bi-instagram"></i>
             </a>
-            <a href="#" class="text-light opacity-75 hover-lift">
-              <i class="bi bi-twitter"></i>
-            </a>
-            <a href="#" class="text-light opacity-75 hover-lift">
+            <a href="https://www.tiktok.com/@bordados_texcort" target="_blank" class="social-icon" title="TikTok">
               <i class="bi bi-tiktok"></i>
             </a>
           </div>
         </div>
-        <div class="col-lg-2 col-md-4 mb-4">
-          <h6 class="fw-bold mb-3">Comprar</h6>
+
+        <!-- Quick Links -->
+        <div class="col-lg-2 col-md-6">
+          <h6 class="fw-bold mb-3">Productos</h6>
           <ul class="list-unstyled">
-            <li><a href="#" class="text-light opacity-75 text-decoration-none">Hombres</a></li>
-            <li><a href="#" class="text-light opacity-75 text-decoration-none">Mujeres</a></li>
-            <li><a href="#" class="text-light opacity-75 text-decoration-none">Niños</a></li>
-            <li><a href="#" class="text-light opacity-75 text-decoration-none">Ofertas</a></li>
+            <li class="mb-2"><a href="{{ url_for('inicio_cp.inicio_publico') }}" class="footer-link">Gorras Bordadas</a></li>
+            <li class="mb-2"><a href="{{ url_for('inicio_cp.inicio_publico') }}" class="footer-link">Busos Personalizados</a></li>
+            <li class="mb-2"><a href="{{ url_for('inicio_cp.inicio_publico') }}" class="footer-link">Dotaciones Empresariales</a></li>
+            <li class="mb-2"><a href="{{ url_for('inicio_cp.inicio_publico') }}" class="footer-link">Catálogo Completo</a></li>
           </ul>
         </div>
-        <div class="col-lg-2 col-md-4 mb-4">
-          <h6 class="fw-bold mb-3">Ayuda</h6>
+
+        <!-- Company -->
+        <div class="col-lg-3 col-md-6">
+          <h6 class="fw-bold mb-3">Empresa</h6>
           <ul class="list-unstyled">
-            <li><a href="#" class="text-light opacity-75 text-decoration-none">Contacto</a></li>
-            <li><a href="#" class="text-light opacity-75 text-decoration-none">Envíos</a></li>
-            <li><a href="#" class="text-light opacity-75 text-decoration-none">Devoluciones</a></li>
-            <li><a href="#" class="text-light opacity-75 text-decoration-none">FAQ</a></li>
+            <li class="mb-2"><a href="{{ url_for('inicio_cp.inicio_publico') }}#sobre-nosotros" class="footer-link">Sobre Nosotros</a></li>
+            <li class="mb-2"><a href="{{ url_for('inicio_cp.inicio_publico') }}#contacto" class="footer-link">Contacto</a></li>
+            <li class="mb-2"><a href="{{ url_for('auth.login') }}" class="footer-link">Iniciar Sesión</a></li>
+            <li class="mb-2"><a href="{{ url_for('auth.register') }}" class="footer-link">Registrarse</a></li>
           </ul>
         </div>
-        <div class="col-lg-4 col-md-4 mb-4">
-          <h6 class="fw-bold mb-3">Newsletter</h6>
-          <p class="text-light opacity-75 small mb-2">Suscríbete para recibir ofertas exclusivas</p>
-          <div class="input-group">
-            <input type="email" class="form-control" placeholder="tu@email.com">
-            <button class="btn btn-warning" type="button">
-              <i class="bi bi-send"></i>
-            </button>
-          </div>
+
+        <!-- Contact Info -->
+        <div class="col-lg-3 col-md-6">
+          <h6 class="fw-bold mb-3">Contacto</h6>
+          <ul class="list-unstyled">
+            <li class="mb-2 d-flex align-items-start">
+              <i class="bi bi-telephone-fill me-2 mt-1"></i>
+              <a href="tel:+573118287778" class="footer-link">+57 311 828 7778</a>
+            </li>
+            <li class="mb-2 d-flex align-items-start">
+              <i class="bi bi-geo-alt-fill me-2 mt-1"></i>
+              <a href="https://maps.app.goo.gl/wdNsLvx2spie67qY8" target="_blank" class="footer-link">
+                Ver Ubicación en Google Maps
+              </a>
+            </li>
+            <li class="mb-2 d-flex align-items-start">
+              <i class="bi bi-clock-fill me-2 mt-1"></i>
+              <span class="text-light opacity-75">Lun - Sáb: 8:00 AM - 6:00 PM</span>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
+
     <div class="text-center pt-3">
       <p class="mb-0 text-light opacity-75">
-        &copy; {{ now().year if now else 2025 }} RopaStore. Todos los derechos reservados.
+        &copy; 2025 Texcort. Todos los derechos reservados.
       </p>
       <p class="small text-light opacity-50 mt-2">
-        Hecho con <i class="bi bi-heart-fill text-danger"></i> para amantes de la moda
+        Bordados y Prendas Personalizadas - Colombia
       </p>
     </div>
   </div>
 </footer>
-{% endif %}
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  // Efecto hover para elementos interactivos
   document.addEventListener('DOMContentLoaded', function() {
-    // Agregar clase hover a todos los cards
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-      card.classList.add('card-hover');
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const html = document.documentElement;
+
+    // Load saved theme or default to light
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    themeToggle.addEventListener('click', function() {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
     });
 
-    // Smooth scroll para enlaces internos
+    function updateThemeIcon(theme) {
+      if (theme === 'dark') {
+        themeIcon.classList.remove('bi-sun-fill');
+        themeIcon.classList.add('bi-moon-fill');
+      } else {
+        themeIcon.classList.remove('bi-moon-fill');
+        themeIcon.classList.add('bi-sun-fill');
+      }
+    }
+
+    // Add hover effects to cards
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+      if (!card.classList.contains('no-hover')) {
+        card.classList.add('card-hover');
+      }
+    });
+
+    // Smooth scroll for internal links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
+        const href = this.getAttribute('href');
+        if (href !== '#' && href.length > 1) {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
         }
       });
     });

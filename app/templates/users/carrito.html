@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Mi Carrito - RopaStore{% endblock %}
+{% block title %}Mi Carrito - Texcort Bordados{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
@@ -8,16 +8,16 @@
     <div class="col-12">
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
         <div class="mb-3 mb-md-0">
-          <h1 class="h2 fw-bold text-dark mb-2">
-            <i class="bi bi-cart3 text-primary me-2"></i>Mi Carrito de Compras
+          <h1 class="h2 fw-bold mb-2" style="color: var(--text-primary);">
+            <i class="bi bi-cart3 me-2" style="color: var(--primary-color);"></i>Mi Carrito de Compras
           </h1>
-          <p class="text-muted mb-0">Revisa y gestiona los productos en tu carrito</p>
+          <p class="mb-0" style="color: var(--text-secondary);">Revisa y gestiona los productos en tu carrito</p>
         </div>
         <div class="d-flex gap-2">
-          <a href="{{ url_for('usuario_cp.vaciar_carrito') }}" class="btn btn-outline-danger rounded-3 px-4 py-2">
+          <a href="{{ url_for('usuario_cp.vaciar_carrito') }}" class="btn rounded-pill px-4 py-2" style="background: var(--bg-secondary); color: var(--danger-color); border: 1px solid var(--danger-color);">
             <i class="bi bi-trash me-2"></i>Vaciar Carrito
           </a>
-          <a href="{{ url_for('usuario_cp.user_dashboard') }}" class="btn btn-outline-primary rounded-3 px-4 py-2">
+          <a href="{{ url_for('usuario_cp.user_dashboard') }}" class="btn rounded-pill px-4 py-2" style="background: var(--bg-secondary); color: var(--primary-color); border: 1px solid var(--primary-color);">
             <i class="bi bi-arrow-left me-2"></i>Seguir Comprando
           </a>
         </div>
@@ -29,16 +29,16 @@
   <div class="row">
     <!-- Lista de Productos -->
     <div class="col-lg-8">
-      <div class="card border-0 shadow-sm rounded-4 mb-4">
+      <div class="card border-0 shadow-sm rounded-4 mb-4" style="background: var(--bg-primary);">
         <div class="card-header bg-transparent border-0 py-4">
-          <h5 class="fw-bold mb-0">
-            <i class="bi bi-bag-check text-primary me-2"></i>
+          <h5 class="fw-bold mb-0" style="color: var(--text-primary);">
+            <i class="bi bi-bag-check me-2" style="color: var(--primary-color);"></i>
             Productos en el Carrito ({{ carrito|length }})
           </h5>
         </div>
         <div class="card-body p-0">
           {% for item in carrito.values() %}
-          <div class="cart-item border-bottom p-4">
+          <div class="cart-item p-4" style="border-bottom: 1px solid var(--border-color);">
             <div class="row align-items-center">
               <!-- Imagen del Producto -->
               <div class="col-md-2 col-3">
@@ -48,20 +48,36 @@
                      alt="{{ item.nombre }}"
                      style="height: 80px; width: 100%; object-fit: cover;">
                 {% else %}
-                <div class="bg-light rounded-3 d-flex align-items-center justify-content-center"
-                     style="height: 80px; width: 100%;">
-                  <i class="bi bi-image text-muted"></i>
+                <div class="rounded-3 d-flex align-items-center justify-content-center"
+                     style="height: 80px; width: 100%; background: var(--bg-tertiary);">
+                  <i class="bi bi-image" style="color: var(--text-muted);"></i>
                 </div>
                 {% endif %}
               </div>
 
               <!-- Información del Producto -->
               <div class="col-md-4 col-9">
-                <h6 class="fw-bold text-dark mb-1">{{ item.nombre }}</h6>
-                <p class="text-muted small mb-2">
+                <h6 class="fw-bold mb-1" style="color: var(--text-primary);">{{ item.nombre }}</h6>
+                <p class="small mb-2" style="color: var(--text-secondary);">
                   <i class="bi bi-tag me-1"></i>Código: #{{ item.id }}
                 </p>
-                <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">
+                
+                <!-- Mostrar Color y Talla Seleccionados -->
+                <div class="d-flex flex-wrap gap-2 mb-2">
+                  {% if item.color and item.color != 'Único' %}
+                  <span class="badge rounded-pill" style="background: var(--primary-color); opacity: 0.2; color: var(--primary-color); border: 1px solid var(--primary-color);">
+                    <i class="bi bi-palette me-1"></i>{{ item.color }}
+                  </span>
+                  {% endif %}
+                  
+                  {% if item.talla and item.talla != 'Única' %}
+                  <span class="badge rounded-pill" style="background: var(--success-color); opacity: 0.2; color: var(--success-color); border: 1px solid var(--success-color);">
+                    <i class="bi bi-rulers me-1"></i>{{ item.talla }}
+                  </span>
+                  {% endif %}
+                </div>
+                
+                <span class="badge rounded-pill" style="background: var(--warning-color); opacity: 0.2; color: var(--warning-color); border: 1px solid var(--warning-color);">
                   ${{ "%.2f"|format(item.precio) }} c/u
                 </span>
               </div>
@@ -69,8 +85,22 @@
               <!-- Cantidad -->
               <div class="col-md-3 col-6 mt-3 mt-md-0">
                 <div class="d-flex align-items-center">
-                  <span class="text-muted me-3">Cantidad:</span>
-                  <span class="fw-bold text-dark fs-5">{{ item.cantidad }}</span>
+                  <span class="me-3" style="color: var(--text-secondary);">Cantidad:</span>
+                  <div class="d-flex align-items-center">
+                    <a href="{{ url_for('usuario_cp.actualizar_cantidad', clave_unica=item.clave_unica, accion='disminuir') }}" 
+                       class="btn btn-sm rounded-3 me-2 {% if item.cantidad <= 1 %}disabled{% endif %}"
+                       style="background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                      <i class="bi bi-dash"></i>
+                    </a>
+                    
+                    <span class="fw-bold fs-5 mx-2" style="color: var(--text-primary);">{{ item.cantidad }}</span>
+                    
+                    <a href="{{ url_for('usuario_cp.actualizar_cantidad', clave_unica=item.clave_unica, accion='aumentar') }}" 
+                       class="btn btn-sm rounded-3 ms-2"
+                       style="background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                      <i class="bi bi-plus"></i>
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -78,12 +108,13 @@
               <div class="col-md-3 col-6 mt-3 mt-md-0">
                 <div class="d-flex align-items-center justify-content-between">
                   <div>
-                    <span class="fw-bold text-success fs-5">${{ "%.2f"|format(item.precio * item.cantidad) }}</span>
-                    <div class="text-muted small">Subtotal</div>
+                    <span class="fw-bold fs-5" style="color: var(--success-color);">${{ "%.2f"|format(item.precio * item.cantidad) }}</span>
+                    <div class="small" style="color: var(--text-muted);">Subtotal</div>
                   </div>
-                  <a href="{{ url_for('usuario_cp.eliminar_carrito', producto_id=item.id) }}"
-                     class="btn btn-outline-danger btn-sm rounded-3"
-                     data-bs-toggle="tooltip" title="Eliminar del carrito">
+                  <a href="{{ url_for('usuario_cp.eliminar_carrito', clave_unica=item.clave_unica) }}"
+                     class="btn btn-sm rounded-3"
+                     style="background: var(--bg-secondary); color: var(--danger-color); border: 1px solid var(--danger-color);"
+                     onclick="return confirm('¿Estás seguro de que quieres eliminar este producto del carrito?');">
                     <i class="bi bi-trash"></i>
                   </a>
                 </div>
@@ -97,59 +128,79 @@
 
     <!-- Resumen de Compra -->
     <div class="col-lg-4">
-      <div class="card border-0 shadow-sm rounded-4 sticky-top" style="top: 20px;">
+      <div class="card border-0 shadow-sm rounded-4 sticky-top" style="top: 20px; background: var(--bg-primary);">
         <div class="card-header bg-transparent border-0 py-4">
-          <h5 class="fw-bold mb-0">
-            <i class="bi bi-receipt text-primary me-2"></i>Resumen de Compra
+          <h5 class="fw-bold mb-0" style="color: var(--text-primary);">
+            <i class="bi bi-receipt me-2" style="color: var(--primary-color);"></i>Resumen de Compra
           </h5>
         </div>
         <div class="card-body">
           <!-- Detalles del Pedido -->
           <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="text-muted">Productos ({{ carrito|length }})</span>
-              <span class="fw-semibold">${{ "%.2f"|format(total) }}</span>
+              <span style="color: var(--text-secondary);">Productos ({{ carrito|length }})</span>
+              <span class="fw-semibold" style="color: var(--text-primary);">${{ "%.2f"|format(total) }}</span>
             </div>
             <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="text-muted">Envío</span>
-              <span class="fw-semibold text-success">Gratis</span>
+              <span style="color: var(--text-secondary);">Envío</span>
+              <span class="fw-semibold" style="color: var(--success-color);">Gratis</span>
             </div>
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <span class="text-muted">Impuestos</span>
-              <span class="fw-semibold">${{ "%.2f"|format(total * 0.15) }}</span>
+              <span style="color: var(--text-secondary);">Impuestos (15%)</span>
+              <span class="fw-semibold" style="color: var(--text-primary);">${{ "%.2f"|format(total * 0.15) }}</span>
             </div>
-            <hr>
+            <hr style="border-color: var(--border-color);">
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <span class="fw-bold text-dark">Total</span>
-              <span class="h4 fw-bold text-success">${{ "%.2f"|format(total * 1.15) }}</span>
+              <span class="fw-bold" style="color: var(--text-primary);">Total</span>
+              <span class="h4 fw-bold" style="color: var(--success-color);">${{ "%.2f"|format(total * 1.15) }}</span>
             </div>
           </div>
 
           <!-- Información de Envío -->
-          <div class="card border-0 bg-light rounded-3 mb-4">
+          <div class="card border-0 rounded-3 mb-4" style="background: var(--bg-secondary);">
             <div class="card-body">
-              <h6 class="fw-bold text-dark mb-3">
-                <i class="bi bi-truck text-primary me-2"></i>Envío Gratis
+              <h6 class="fw-bold mb-3" style="color: var(--text-primary);">
+                <i class="bi bi-truck me-2" style="color: var(--primary-color);"></i>Envío Gratis
               </h6>
-              <p class="small text-muted mb-0">
-                <i class="bi bi-check-circle text-success me-1"></i>
+              <p class="small mb-0" style="color: var(--text-secondary);">
+                <i class="bi bi-check-circle me-1" style="color: var(--success-color);"></i>
                 Recibe tu pedido en 3-5 días hábiles
               </p>
             </div>
           </div>
 
+          <!-- Resumen de Selecciones -->
+          <div class="card border-0 rounded-3 mb-4" style="background: var(--primary-color); opacity: 0.1;">
+            <div class="card-body">
+              <h6 class="fw-bold mb-3" style="color: var(--text-primary);">
+                <i class="bi bi-check-circle me-2" style="color: var(--primary-color);"></i>Tu Selección
+              </h6>
+              <div class="small" style="color: var(--text-secondary);">
+                {% for item in carrito.values() %}
+                <div class="d-flex justify-content-between mb-1">
+                  <span>{{ item.nombre }}</span>
+                  <span>
+                    {% if item.color and item.color != 'Único' %}{{ item.color }}{% endif %}
+                    {% if item.talla and item.talla != 'Única' %} - {{ item.talla }}{% endif %}
+                  </span>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
           <!-- Botón de Finalizar Compra -->
-          <button class="btn btn-primary btn-lg w-100 rounded-3 py-3 mb-3">
+          <a href="{{ url_for('usuario_cp.procesar_pedido') }}" class="btn btn-lg w-100 rounded-pill py-3 mb-3" style="background: var(--primary-color); color: white; border: none;">
             <i class="bi bi-credit-card me-2"></i>Proceder al Pago
-          </button>
+          </a>
 
           <!-- Medios de Pago -->
           <div class="text-center">
-            <p class="small text-muted mb-2">Aceptamos</p>
+            <p class="small mb-2" style="color: var(--text-secondary);">Aceptamos</p>
             <div class="d-flex justify-content-center gap-3">
-              <i class="bi bi-credit-card-2-front text-muted fs-4"></i>
-              <i class="bi bi-paypal text-primary fs-4"></i>
-              <i class="bi bi-currency-dollar text-success fs-4"></i>
+              <i class="bi bi-credit-card-2-front fs-4" style="color: var(--text-muted);"></i>
+              <i class="bi bi-paypal fs-4" style="color: var(--primary-color);"></i>
+              <i class="bi bi-currency-dollar fs-4" style="color: var(--success-color);"></i>
             </div>
           </div>
         </div>
@@ -186,16 +237,16 @@
   <!-- Carrito Vacío -->
   <div class="row justify-content-center">
     <div class="col-lg-6">
-      <div class="card border-0 bg-light rounded-4 text-center py-5">
+      <div class="card border-0 rounded-4 text-center py-5" style="background: var(--bg-primary);">
         <div class="card-body">
-          <i class="bi bi-cart-x display-1 text-muted mb-3"></i>
-          <h3 class="fw-bold text-dark mb-3">Tu carrito está vacío</h3>
-          <p class="text-muted mb-4">¡Descubre nuestros increíbles productos y llena tu carrito con estilo!</p>
+          <i class="bi bi-cart-x display-1 mb-3" style="color: var(--text-muted);"></i>
+          <h3 class="fw-bold mb-3" style="color: var(--text-primary);">Tu carrito está vacío</h3>
+          <p class="mb-4" style="color: var(--text-secondary);">¡Descubre nuestros increíbles productos y llena tu carrito con estilo!</p>
           <div class="d-flex gap-3 justify-content-center flex-wrap">
-            <a href="{{ url_for('usuario_cp.user_dashboard') }}" class="btn btn-primary rounded-3 px-4 py-2">
+            <a href="{{ url_for('usuario_cp.user_dashboard') }}" class="btn rounded-pill px-4 py-2" style="background: var(--primary-color); color: white; border: none;">
               <i class="bi bi-bag me-2"></i>Explorar Productos
             </a>
-            <a href="{{ url_for('inicio_cp.inicio_publico') }}" class="btn btn-outline-primary rounded-3 px-4 py-2">
+            <a href="{{ url_for('inicio_cp.inicio_publico') }}" class="btn rounded-pill px-4 py-2" style="background: var(--bg-secondary); color: var(--primary-color); border: 1px solid var(--primary-color);">
               <i class="bi bi-house me-2"></i>Volver al Inicio
             </a>
           </div>
@@ -217,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const cartItems = document.querySelectorAll('.cart-item');
   cartItems.forEach(item => {
     item.addEventListener('mouseenter', function() {
-      this.style.backgroundColor = '#f8f9fa';
+      this.style.backgroundColor = var(--bg-secondary);
     });
     item.addEventListener('mouseleave', function() {
       this.style.backgroundColor = '';
@@ -229,9 +280,21 @@ document.addEventListener('DOMContentLoaded', function() {
   if (payButton) {
     payButton.addEventListener('mouseenter', function() {
       this.style.transform = 'translateY(-2px)';
+      this.style.boxShadow = var(--shadow-md);
     });
     payButton.addEventListener('mouseleave', function() {
       this.style.transform = 'translateY(0)';
+      this.style.boxShadow = 'none';
+    });
+  }
+
+  // Confirmación para vaciar carrito
+  const vaciarCarritoBtn = document.querySelector('a[href*="vaciar_carrito"]');
+  if (vaciarCarritoBtn) {
+    vaciarCarritoBtn.addEventListener('click', function(e) {
+      if (!confirm('¿Estás seguro de que quieres vaciar todo el carrito? Esta acción no se puede deshacer.')) {
+        e.preventDefault();
+      }
     });
   }
 });
@@ -241,7 +304,9 @@ document.addEventListener('DOMContentLoaded', function() {
   /* SOLUCIÓN PARA EL BUG DEL NAVBAR */
   .navbar {
     position: fixed;
-    z-index: 1030; /* Bootstrap usa 1030 para navbar fixed */
+    top: 0;
+    width: 100%;
+    z-index: 1030;
     background: white;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   }
@@ -249,14 +314,13 @@ document.addEventListener('DOMContentLoaded', function() {
   .container-fluid.py-4 {
     position: relative;
     z-index: 1;
-    margin-top: 80px; /* Ajusta según la altura de tu navbar */
+    margin-top: 80px;
   }
 
   /* CORRECCIÓN PARA LA CARD STICKY */
   .sticky-top {
     position: sticky;
-    z-index: 10; /* Menor que el navbar */
-    
+    z-index: 10;
   }
 
   /* Estilos existentes mejorados */
@@ -265,45 +329,24 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   .cart-item:hover {
-    background-color: #f8f9fa;
+    background-color: var(--bg-secondary);
+    transform: translateX(5px);
   }
 
-  .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    transition: all 0.3s ease;
-  }
-
-  .btn-primary:hover {
+  .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: var(--shadow-md);
   }
 
-  .btn-outline-danger:hover {
-    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
-    border-color: #dc3545;
-    color: white;
-  }
-
-  .btn-outline-primary:hover {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-color: #667eea;
-    color: white;
-  }
-
-  .bg-opacity-10 {
-    background-color: rgba(13, 110, 253, 0.1) !important;
+  .sticky-top {
+    position: sticky;
+    z-index: 10;
   }
 
   .card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
-  .card:hover {
-    transform: translateY(-2px);
-  }
-
-  /* Responsive */
   @media (max-width: 768px) {
     .cart-item {
       padding: 1.5rem 1rem;
@@ -315,13 +358,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     .container-fluid.py-4 {
-      margin-top: 70px; /* Menor en móvil si el navbar es más pequeño */
+      margin-top: 70px;
     }
   }
 
   @media (max-width: 576px) {
     .container-fluid.py-4 {
       margin-top: 60px;
+    }
+    
+    .cart-item .row > div {
+      margin-bottom: 1rem;
+    }
+    
+    .cart-item .row > div:last-child {
+      margin-bottom: 0;
     }
   }
 </style>

@@ -1,32 +1,31 @@
 {% extends "base.html" %}
-{% block title %}Inicio - RopaStore{% endblock %}
+{% block title %}Inicio - Texcort Bordados{% endblock %}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 {% block content %}
 <!-- HERO SECTION -->
-<section class="hero-section bg-gradient-primary py-5 mb-5">
+<section class="hero-section py-5 mb-5" style="background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);">
   <div class="container">
     <div class="row align-items-center">
-      <div class="col-lg-6">
+      <div class="col-lg-6 mb-4 mb-lg-0">
         <h1 class="display-4 fw-bold text-white mb-4">
-          Descubre tu <span class="text-warning">estilo único</span>
+          Bordados y Prendas <span style="color: var(--accent-color);">Personalizadas</span>
         </h1>
-        <p class="lead text-white mb-4">
-          Las mejores tendencias en moda para toda la familia. Calidad, estilo y precios increíbles en un solo lugar.
+        <p class="lead text-white mb-4 opacity-90">
+          Especialistas en gorras bordadas, busos personalizados y dotaciones empresariales. Calidad y profesionalismo en cada puntada.
         </p>
         <div class="d-flex gap-3 flex-wrap">
-          <a href="{{ url_for('auth.login') }}" class="btn btn-warning btn-lg px-4 py-2 rounded-pill shadow">
+          <a href="{{ url_for('auth.login') }}" class="btn btn-lg px-4 py-3 rounded-pill shadow" style="background: var(--accent-color); color: white; border: none;">
             <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
           </a>
-          <a href="#productos-destacados" class="btn btn-outline-light btn-lg px-4 py-2 rounded-pill">
+          <a href="#productos-destacados" class="btn btn-outline-light btn-lg px-4 py-3 rounded-pill">
             <i class="bi bi-arrow-down me-2"></i>Ver Productos
           </a>
         </div>
       </div>
       <div class="col-lg-6 text-center">
-        <img src="{{ url_for('static', filename='img/hero-fashion.png') }}" 
-             alt="Moda RopaStore" 
-             class="img-fluid rounded-4 shadow-lg" 
-             style="max-height: 400px;">
+        <div class="position-relative">
+          <i class="bi bi-scissors display-1 text-white opacity-75" style="font-size: 15rem;"></i>
+        </div>
       </div>
     </div>
   </div>
@@ -35,42 +34,132 @@
 <!-- STATS SECTION -->
 <section class="container my-5">
   <div class="row g-4 text-center">
-    <div class="col-md-3">
-      <div class="card border-0 bg-light rounded-4 p-4 shadow-sm">
-        <div class="text-primary mb-3">
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#0d6efd" class="bi bi-t-shirt" viewBox="0 0 16 16">
-  <path d="M8 0c-.787 0-1.55.192-2.184.517-.296.15-.58.324-.848.518L3.708 2.708 2.6 1.6C2.066 1.066 1.295 1.17.832 1.664c-.322.342-.425.82-.298 1.238L1.95 6.341a1 1 0 0 0 .98.717H3v7.25A1.75 1.75 0 0 0 4.75 16h6.5A1.75 1.75 0 0 0 13 14.308V7.058h1.07a1 1 0 0 0 .98-.717l1.416-3.439c.127-.418.024-.896-.298-1.238-.463-.495-1.234-.598-1.768-.064L12.292 2.708 11.032 1.035a4.243 4.243 0 0 0-.848-.518A4.004 4.004 0 0 0 8 0z"/>
-</svg>
+    <div class="col-md-3 col-sm-6">
+      <div class="card border-0 rounded-4 p-4 shadow-sm h-100" style="background: var(--bg-primary);">
+        <div class="mb-3" style="color: var(--primary-color);">
+          <i class="bi bi-box-seam display-4"></i>
         </div>
-        <h3 class="fw-bold text-dark">{{ total_productos }}+</h3>
-        <p class="text-muted mb-0">Productos Disponibles</p>
+        <h3 class="fw-bold" style="color: var(--text-primary);">{{ total_productos }}+</h3>
+        <p class="mb-0" style="color: var(--text-secondary);">Productos Disponibles</p>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card border-0 bg-light rounded-4 p-4 shadow-sm">
-        <div class="text-success mb-3">
-          <i class="bi bi-tags display-6"></i>
+    <div class="col-md-3 col-sm-6">
+      <div class="card border-0 rounded-4 p-4 shadow-sm h-100" style="background: var(--bg-primary);">
+        <div class="mb-3" style="color: var(--success-color);">
+          <i class="bi bi-tags display-4"></i>
         </div>
-        <h3 class="fw-bold text-dark">{{ total_categorias }}+</h3>
-        <p class="text-muted mb-0">Categorías</p>
+        <h3 class="fw-bold" style="color: var(--text-primary);">{{ total_categorias }}+</h3>
+        <p class="mb-0" style="color: var(--text-secondary);">Categorías</p>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card border-0 bg-light rounded-4 p-4 shadow-sm">
-        <div class="text-warning mb-3">
-          <i class="bi bi-star display-6"></i>
+    <div class="col-md-3 col-sm-6">
+      <div class="card border-0 rounded-4 p-4 shadow-sm h-100" style="background: var(--bg-primary);">
+        <div class="mb-3" style="color: var(--warning-color);">
+          <i class="bi bi-star display-4"></i>
         </div>
-        <h3 class="fw-bold text-dark">{{ productos_destacados|length }}+</h3>
-        <p class="text-muted mb-0">Productos Destacados</p>
+        <h3 class="fw-bold" style="color: var(--text-primary);">{{ productos_destacados|length }}+</h3>
+        <p class="mb-0" style="color: var(--text-secondary);">Productos Destacados</p>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card border-0 bg-light rounded-4 p-4 shadow-sm">
-        <div class="text-info mb-3">
-          <i class="bi bi-people display-6"></i>
+    <div class="col-md-3 col-sm-6">
+      <div class="card border-0 rounded-4 p-4 shadow-sm h-100" style="background: var(--bg-primary);">
+        <div class="mb-3" style="color: var(--accent-color);">
+          <i class="bi bi-people display-4"></i>
         </div>
-        <h3 class="fw-bold text-dark">{{ total_clientes }}+</h3>
-        <p class="text-muted mb-0">Clientes Satisfechos</p>
+        <h3 class="fw-bold" style="color: var(--text-primary);">{{ total_clientes }}+</h3>
+        <p class="mb-0" style="color: var(--text-secondary);">Clientes Satisfechos</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOBRE NOSOTROS SECTION -->
+<section id="sobre-nosotros" class="py-5" style="background: var(--bg-secondary);">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold display-5 mb-3" style="color: var(--text-primary);">Sobre Nosotros</h2>
+      <p class="lead" style="color: var(--text-secondary);">Conoce nuestra historia y compromiso con la calidad</p>
+    </div>
+
+    <div class="row g-4 align-items-center mb-5">
+      <div class="col-lg-6">
+        <div class="card border-0 rounded-4 p-4 shadow-sm" style="background: var(--bg-primary);">
+          <h4 class="fw-bold mb-3" style="color: var(--primary-color);">
+            <i class="bi bi-building me-2"></i>Nuestra Empresa
+          </h4>
+          <p style="color: var(--text-primary); line-height: 1.8;">
+            Texcort es una empresa colombiana dedicada a la fabricación, personalización y comercialización de prendas bordadas, especializada en gorras, busos y dotaciones empresariales. Nuestro objetivo es ofrecer productos de alta calidad que reflejen la identidad y profesionalismo de cada cliente, combinando diseño, comodidad y durabilidad.
+          </p>
+          <p style="color: var(--text-primary); line-height: 1.8;">
+            Con una amplia experiencia en el sector textil, Texcort se ha posicionado como una marca confiable y competitiva en el mercado nacional. Gracias a nuestro equipo de diseñadores, bordadores y asesores comerciales, brindamos un servicio completo que abarca desde la creación del diseño hasta la entrega final del producto.
+          </p>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card border-0 rounded-4 p-4 shadow-sm" style="background: var(--bg-primary);">
+          <h4 class="fw-bold mb-3" style="color: var(--primary-color);">
+            <i class="bi bi-gear me-2"></i>Nuestro Proceso
+          </h4>
+          <p style="color: var(--text-primary); line-height: 1.8;">
+            Nuestros procesos se desarrollan con maquinaria moderna y materiales de primera calidad, garantizando acabados finos y bordados resistentes. Contamos con una línea de producción personalizada, que permite adaptar cada prenda al estilo y las necesidades de cada empresa, institución o evento.
+          </p>
+          <p style="color: var(--text-primary); line-height: 1.8;">
+            Texcort presta servicio a nivel nacional, realizando envíos a todas las regiones del país con cumplimiento, puntualidad y atención personalizada. Nuestro compromiso es ofrecer soluciones textiles que fortalezcan la imagen de las marcas y empresas que confían en nosotros.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Productos Destacados -->
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card border-0 rounded-4 shadow-sm h-100" style="background: var(--bg-primary);">
+          <div class="card-body p-4 text-center">
+            <div class="mb-3" style="color: var(--primary-color);">
+              <i class="bi bi-cap display-3"></i>
+            </div>
+            <h5 class="fw-bold mb-3" style="color: var(--text-primary);">Gorras Bordadas</h5>
+            <p style="color: var(--text-secondary);">
+              Gorras personalizadas, ideales para uniformes corporativos, promociones y equipos deportivos.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-0 rounded-4 shadow-sm h-100" style="background: var(--bg-primary);">
+          <div class="card-body p-4 text-center">
+            <div class="mb-3" style="color: var(--success-color);">
+              <i class="bi bi-person-badge display-3"></i>
+            </div>
+            <h5 class="fw-bold mb-3" style="color: var(--text-primary);">Busos Bordados</h5>
+            <p style="color: var(--text-secondary);">
+              Confeccionados con materiales cómodos y resistentes, perfectos para uso institucional o casual.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-0 rounded-4 shadow-sm h-100" style="background: var(--bg-primary);">
+          <div class="card-body p-4 text-center">
+            <div class="mb-3" style="color: var(--accent-color);">
+              <i class="bi bi-briefcase display-3"></i>
+            </div>
+            <h5 class="fw-bold mb-3" style="color: var(--text-primary);">Dotaciones Empresariales</h5>
+            <p style="color: var(--text-secondary);">
+              Dotaciones completas que incluyen camisetas, chalecos, overoles y prendas de protección laboral.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-5">
+      <div class="card border-0 rounded-4 p-4 shadow-sm" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);">
+        <p class="text-white mb-0 lead fw-semibold">
+          <i class="bi bi-quote me-2"></i>
+          En Texcort, cada prenda cuenta una historia y cada bordado refleja el esfuerzo, la pasión y la dedicación de nuestro equipo. Somos más que una empresa textil: somos aliados en la construcción de tu identidad visual.
+          <i class="bi bi-quote ms-2"></i>
+        </p>
       </div>
     </div>
   </div>
@@ -79,13 +168,13 @@
 <!-- CATEGORÍAS -->
 <section class="container my-5">
   <div class="text-center mb-5">
-    <h2 class="fw-bold display-5 mb-3">Nuestras Categorías</h2>
-    <p class="text-muted lead">Explora nuestra amplia variedad de estilos</p>
+    <h2 class="fw-bold display-5 mb-3" style="color: var(--text-primary);">Nuestras Categorías</h2>
+    <p class="lead" style="color: var(--text-secondary);">Explora nuestra amplia variedad de productos</p>
   </div>
   <div class="row g-4">
     {% for categoria in categorias %}
     <div class="col-md-4">
-      <div class="card category-card border-0 shadow-lg h-100 overflow-hidden rounded-4">
+      <div class="card category-card border-0 shadow-sm h-100 overflow-hidden rounded-4" style="background: var(--bg-primary);">
         <div class="category-image-container">
           {% if categoria.imagen %}
           <img src="{{ url_for('usuario_cp.serve_uploaded_file', filename=categoria.imagen) }}" 
@@ -93,26 +182,25 @@
                alt="{{ categoria.nombre }}"
                style="height: 250px; object-fit: cover;">
           {% else %}
-          <div class="bg-gradient-secondary d-flex align-items-center justify-content-center" 
-               style="height: 250px;">
+          <div class="d-flex align-items-center justify-content-center" 
+               style="height: 250px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);">
             <i class="bi bi-tag text-white display-1"></i>
           </div>
           {% endif %}
-          <div class="category-overlay"></div>
         </div>
         <div class="card-body text-center p-4">
-          <h5 class="card-title fw-bold text-dark">{{ categoria.nombre }}</h5>
-          <p class="card-text text-muted">{{ categoria.descripcion or 'Descubre los mejores productos' }}</p>
-          <span class="badge bg-primary rounded-pill">{{ categoria.productos|length }} productos</span>
+          <h5 class="card-title fw-bold" style="color: var(--text-primary);">{{ categoria.nombre }}</h5>
+          <p class="card-text" style="color: var(--text-secondary);">{{ categoria.descripcion or 'Descubre los mejores productos' }}</p>
+          <span class="badge rounded-pill" style="background: var(--primary-color); color: white;">{{ categoria.productos|length }} productos</span>
         </div>
       </div>
     </div>
     {% else %}
     <div class="col-12 text-center">
-      <div class="card border-0 bg-light rounded-4 p-5">
-        <i class="bi bi-inbox display-1 text-muted mb-3"></i>
-        <h4 class="text-muted">No hay categorías disponibles</h4>
-        <p class="text-muted">Próximamente agregaremos nuevas categorías</p>
+      <div class="card border-0 rounded-4 p-5" style="background: var(--bg-primary);">
+        <i class="bi bi-inbox display-1 mb-3" style="color: var(--text-muted);"></i>
+        <h4 style="color: var(--text-secondary);">No hay categorías disponibles</h4>
+        <p style="color: var(--text-muted);">Próximamente agregaremos nuevas categorías</p>
       </div>
     </div>
     {% endfor %}
@@ -120,74 +208,86 @@
 </section>
 
 <!-- PRODUCTOS DESTACADOS -->
-<section id="productos-destacados" class="container my-5">
-  <div class="text-center mb-5">
-    <h2 class="fw-bold display-5 mb-3">✨ Productos Destacados</h2>
-    <p class="text-muted lead">Lo más vendido y mejor valorado por nuestros clientes</p>
-  </div>
-  <div class="row g-4">
-    {% for producto in productos_destacados %}
-    <div class="col-xl-3 col-lg-4 col-md-6">
-      <div class="card product-card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-        <div class="position-relative">
-          {% if producto.imagen %}
-          <img src="{{ url_for('usuario_cp.serve_uploaded_file', filename=producto.imagen) }}" 
-               class="card-img-top" 
-               alt="{{ producto.nombre }}"
-               style="height: 220px; object-fit: cover;">
-          {% else %}
-          <div class="bg-light d-flex align-items-center justify-content-center" 
-               style="height: 220px;">
-            <i class="bi bi-image text-muted display-4"></i>
-          </div>
-          {% endif %}
-          {% if producto.destacado %}
-          <span class="position-absolute top-0 start-0 m-3 badge bg-warning rounded-pill">
-            <i class="bi bi-star-fill me-1"></i>Destacado
-          </span>
-          {% endif %}
-          <span class="position-absolute top-0 end-0 m-3 badge bg-success rounded-pill">
-            ${{ "%.2f"|format(producto.precio) }}
-          </span>
-        </div>
-        <div class="card-body d-flex flex-column p-4">
-          <h6 class="fw-bold text-dark mb-2">{{ producto.nombre }}</h6>
-          <p class="text-muted small mb-2">{{ producto.categoria.nombre if producto.categoria else 'General' }}</p>
-          <p class="text-muted small flex-grow-1">{{ producto.descripcion[:80] }}{% if producto.descripcion|length > 80 %}...{% endif %}</p>
-          
-          <div class="d-flex justify-content-between align-items-center mt-auto">
-            <span class="badge bg-light text-dark border">
-              <i class="bi bi-box-seam me-1"></i>{{ producto.stock }} disp.
+<section id="productos-destacados" class="py-5" style="background: var(--bg-secondary);">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold display-5 mb-3" style="color: var(--text-primary);">Productos Destacados</h2>
+      <p class="lead" style="color: var(--text-secondary);">Lo más vendido y mejor valorado por nuestros clientes</p>
+    </div>
+    <div class="row g-4">
+      {% for producto in productos_destacados %}
+      <div class="col-xl-3 col-lg-4 col-md-6">
+        <div class="card product-card border-0 shadow-sm h-100 rounded-4 overflow-hidden" 
+             style="cursor: pointer; background: var(--bg-primary);" 
+             data-bs-toggle="modal" 
+             data-bs-target="#productoModal{{ producto.id }}">
+          <div class="position-relative">
+            {% if producto.imagen %}
+            <img src="{{ url_for('usuario_cp.serve_uploaded_file', filename=producto.imagen) }}" 
+                 class="card-img-top" 
+                 alt="{{ producto.nombre }}"
+                 style="height: 220px; object-fit: cover;">
+            {% else %}
+            <div class="d-flex align-items-center justify-content-center" 
+                 style="height: 220px; background: var(--bg-tertiary);">
+              <i class="bi bi-image display-4" style="color: var(--text-muted);"></i>
+            </div>
+            {% endif %}
+            {% if producto.destacado %}
+            <span class="position-absolute top-0 start-0 m-3 badge rounded-pill" style="background: var(--warning-color);">
+              <i class="bi bi-star-fill me-1"></i>Destacado
             </span>
-            <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-sm rounded-pill px-3">
-              <i class="bi bi-cart-plus me-1"></i>Comprar
-            </a>
+            {% endif %}
+            <span class="position-absolute top-0 end-0 m-3 badge rounded-pill" style="background: var(--success-color);">
+              ${{ "%.2f"|format(producto.precio) }}
+            </span>
+          </div>
+          <div class="card-body d-flex flex-column p-4">
+            <h6 class="fw-bold mb-2" style="color: var(--text-primary);">{{ producto.nombre }}</h6>
+            <p class="small mb-2" style="color: var(--text-secondary);">{{ producto.categoria.nombre if producto.categoria else 'General' }}</p>
+            <p class="small flex-grow-1" style="color: var(--text-muted);">{{ producto.descripcion[:80] }}{% if producto.descripcion|length > 80 %}...{% endif %}</p>
+            
+            <div class="d-flex justify-content-between align-items-center mt-auto">
+              <span class="badge border" style="background: var(--bg-tertiary); color: var(--text-primary);">
+                <i class="bi bi-box-seam me-1"></i>{{ producto.stock }} disp.
+              </span>
+              <button class="btn btn-sm rounded-pill px-3" 
+                      style="background: var(--primary-color); color: white; border: none;"
+                      onclick="event.stopPropagation();"
+                      data-bs-toggle="modal" 
+                      data-bs-target="#productoModal{{ producto.id }}">
+                <i class="bi bi-eye me-1"></i>Ver Detalles
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    {% else %}
-    <div class="col-12 text-center">
-      <div class="card border-0 bg-light rounded-4 p-5">
-        <i class="bi bi-stars display-1 text-muted mb-3"></i>
-        <h4 class="text-muted">No hay productos destacados</h4>
-        <p class="text-muted">Los productos destacados aparecerán aquí</p>
+      {% else %}
+      <div class="col-12 text-center">
+        <div class="card border-0 rounded-4 p-5" style="background: var(--bg-primary);">
+          <i class="bi bi-stars display-1 mb-3" style="color: var(--text-muted);"></i>
+          <h4 style="color: var(--text-secondary);">No hay productos destacados</h4>
+          <p style="color: var(--text-muted);">Los productos destacados aparecerán aquí</p>
+        </div>
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
   </div>
 </section>
 
 <!-- ÚLTIMOS PRODUCTOS -->
 <section class="container my-5">
   <div class="text-center mb-5">
-    <h2 class="fw-bold display-5 mb-3">🆕 Nuevos Ingresos</h2>
-    <p class="text-muted lead">Descubre nuestras últimas incorporaciones</p>
+    <h2 class="fw-bold display-5 mb-3" style="color: var(--text-primary);">Nuevos Ingresos</h2>
+    <p class="lead" style="color: var(--text-secondary);">Descubre nuestras últimas incorporaciones</p>
   </div>
   <div class="row g-4">
     {% for producto in productos %}
     <div class="col-xl-3 col-lg-4 col-md-6">
-      <div class="card product-card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
+      <div class="card product-card border-0 shadow-sm h-100 rounded-4 overflow-hidden" 
+           style="cursor: pointer; background: var(--bg-primary);" 
+           data-bs-toggle="modal" 
+           data-bs-target="#productoModal{{ producto.id }}">
         <div class="position-relative">
           {% if producto.imagen %}
           <img src="{{ url_for('usuario_cp.serve_uploaded_file', filename=producto.imagen) }}" 
@@ -195,82 +295,264 @@
                alt="{{ producto.nombre }}"
                style="height: 220px; object-fit: cover;">
           {% else %}
-          <div class="bg-light d-flex align-items-center justify-content-center" 
-               style="height: 220px;">
-            <i class="bi bi-image text-muted display-4"></i>
+          <div class="d-flex align-items-center justify-content-center" 
+               style="height: 220px; background: var(--bg-tertiary);">
+            <i class="bi bi-image display-4" style="color: var(--text-muted);"></i>
           </div>
           {% endif %}
-          <span class="position-absolute top-0 end-0 m-3 badge bg-dark rounded-pill">
+          <span class="position-absolute top-0 end-0 m-3 badge rounded-pill" style="background: var(--primary-dark); color: white;">
             Nuevo
           </span>
         </div>
         <div class="card-body d-flex flex-column p-4">
-          <h6 class="fw-bold text-dark mb-2">{{ producto.nombre }}</h6>
-          <p class="text-muted small mb-2">{{ producto.categoria.nombre if producto.categoria else 'General' }}</p>
+          <h6 class="fw-bold mb-2" style="color: var(--text-primary);">{{ producto.nombre }}</h6>
+          <p class="small mb-2" style="color: var(--text-secondary);">{{ producto.categoria.nombre if producto.categoria else 'General' }}</p>
           <div class="d-flex justify-content-between align-items-center mt-auto">
-            <span class="h6 text-primary mb-0">${{ "%.2f"|format(producto.precio) }}</span>
-            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
-              <i class="bi bi-cart-plus me-1"></i>Comprar
-            </a>
+            <span class="h6 mb-0" style="color: var(--primary-color);">${{ "%.2f"|format(producto.precio) }}</span>
+            <button class="btn btn-outline-primary btn-sm rounded-pill px-3"
+                    onclick="event.stopPropagation();"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#productoModal{{ producto.id }}">
+              <i class="bi bi-eye me-1"></i>Ver
+            </button>
           </div>
         </div>
       </div>
     </div>
     {% else %}
     <div class="col-12 text-center">
-      <div class="card border-0 bg-light rounded-4 p-5">
-        <i class="bi bi-clock display-1 text-muted mb-3"></i>
-        <h4 class="text-muted">No hay productos recientes</h4>
-        <p class="text-muted">Los nuevos productos aparecerán aquí</p>
+      <div class="card border-0 rounded-4 p-5" style="background: var(--bg-primary);">
+        <i class="bi bi-clock display-1 mb-3" style="color: var(--text-muted);"></i>
+        <h4 style="color: var(--text-secondary);">No hay productos recientes</h4>
+        <p style="color: var(--text-muted);">Los nuevos productos aparecerán aquí</p>
       </div>
     </div>
     {% endfor %}
   </div>
 </section>
 
+<!-- CONTACTO SECTION -->
+<section id="contacto" class="py-5" style="background: var(--bg-secondary);">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold display-5 mb-3" style="color: var(--text-primary);">Contáctanos</h2>
+      <p class="lead" style="color: var(--text-secondary);">Estamos aquí para ayudarte con tus proyectos de bordado</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="card border-0 rounded-4 shadow-sm h-100 text-center p-4" style="background: var(--bg-primary);">
+          <div class="mb-3" style="color: var(--primary-color);">
+            <i class="bi bi-telephone-fill display-4"></i>
+          </div>
+          <h5 class="fw-bold mb-3" style="color: var(--text-primary);">Teléfono</h5>
+          <p style="color: var(--text-secondary);">Llámanos o escríbenos por WhatsApp</p>
+          <a href="tel:+573118287778" class="btn btn-lg rounded-pill mt-2" style="background: var(--success-color); color: white; border: none;">
+            <i class="bi bi-whatsapp me-2"></i>+57 311 828 7778
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card border-0 rounded-4 shadow-sm h-100 text-center p-4" style="background: var(--bg-primary);">
+          <div class="mb-3" style="color: var(--primary-color);">
+            <i class="bi bi-share-fill display-4"></i>
+          </div>
+          <h5 class="fw-bold mb-3" style="color: var(--text-primary);">Redes Sociales</h5>
+          <p style="color: var(--text-secondary);">Síguenos en nuestras redes</p>
+          <div class="d-flex justify-content-center gap-3 mt-2">
+            <a href="https://www.facebook.com/share/14MC2PR1u7Q/" target="_blank" class="btn btn-lg rounded-circle" style="background: #1877f2; color: white; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-facebook"></i>
+            </a>
+            <a href="https://www.instagram.com/bordados_texcort" target="_blank" class="btn btn-lg rounded-circle" style="background: #e4405f; color: white; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-instagram"></i>
+            </a>
+            <a href="https://www.tiktok.com/@bordados_texcort" target="_blank" class="btn btn-lg rounded-circle" style="background: #000000; color: white; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+              <i class="bi bi-tiktok"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card border-0 rounded-4 shadow-sm h-100 text-center p-4" style="background: var(--bg-primary);">
+          <div class="mb-3" style="color: var(--primary-color);">
+            <i class="bi bi-geo-alt-fill display-4"></i>
+          </div>
+          <h5 class="fw-bold mb-3" style="color: var(--text-primary);">Ubicación</h5>
+          <p style="color: var(--text-secondary);">Visítanos o encuentra nuestra ubicación</p>
+          <a href="https://maps.app.goo.gl/wdNsLvx2spie67qY8" target="_blank" class="btn btn-lg rounded-pill mt-2" style="background: var(--primary-color); color: white; border: none;">
+            <i class="bi bi-map me-2"></i>Ver en Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card border-0 rounded-4 shadow-sm p-4" style="background: var(--bg-primary);">
+          <div class="row align-items-center">
+            <div class="col-md-8">
+              <h5 class="fw-bold mb-2" style="color: var(--text-primary);">
+                <i class="bi bi-clock-fill me-2" style="color: var(--primary-color);"></i>Horario de Atención
+              </h5>
+              <p class="mb-0" style="color: var(--text-secondary);">
+                Lunes a Sábado: 8:00 AM - 6:00 PM
+              </p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+              <a href="{{ url_for('auth.login') }}" class="btn btn-lg rounded-pill" style="background: var(--accent-color); color: white; border: none;">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{% for producto in productos_destacados + productos %}
+<div class="modal fade" id="productoModal{{ producto.id }}" tabindex="-1" aria-labelledby="productoModalLabel{{ producto.id }}" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0 shadow" style="background: var(--bg-primary);">
+      <div class="modal-header border-0 pb-0">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4 p-md-5">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="card border-0 rounded-3 overflow-hidden" style="background: var(--bg-tertiary);">
+              {% if producto.imagen %}
+              <img src="{{ url_for('usuario_cp.serve_uploaded_file', filename=producto.imagen) }}" 
+                   class="card-img-top" 
+                   alt="{{ producto.nombre }}"
+                   style="height: 300px; object-fit: cover;">
+              {% else %}
+              <div class="d-flex align-items-center justify-content-center" 
+                   style="height: 300px;">
+                <i class="bi bi-image display-1" style="color: var(--text-muted);"></i>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <div class="d-flex flex-column h-100">
+              <div class="mb-3">
+                {% if producto.destacado %}
+                <span class="badge rounded-pill mb-2" style="background: var(--warning-color);">
+                  <i class="bi bi-star-fill me-1"></i>Destacado
+                </span>
+                {% endif %}
+                <h3 class="fw-bold mb-2" style="color: var(--text-primary);">{{ producto.nombre }}</h3>
+                <p class="mb-2" style="color: var(--text-secondary);">{{ producto.categoria.nombre if producto.categoria else 'General' }}</p>
+              </div>
+              
+              <div class="mb-3">
+                <h2 class="fw-bold" style="color: var(--primary-color);">${{ "%.2f"|format(producto.precio) }}</h2>
+                {% if producto.stock > 0 %}
+                <span class="badge" style="background: var(--success-color);">
+                  <i class="bi bi-check-circle me-1"></i>En stock ({{ producto.stock }} disponibles)
+                </span>
+                {% else %}
+                <span class="badge" style="background: var(--danger-color);">
+                  <i class="bi bi-x-circle me-1"></i>Agotado
+                </span>
+                {% endif %}
+              </div>
+              
+              <div class="mb-4">
+                <h6 class="fw-semibold mb-2" style="color: var(--text-primary);">Descripción</h6>
+                <p style="color: var(--text-secondary);">{{ producto.descripcion or 'Sin descripción disponible.' }}</p>
+              </div>
+              
+              {% if producto.colores or producto.tallas %}
+              <div class="mb-4">
+                <div class="row g-3">
+                  {% if producto.colores %}
+                  <div class="col-6">
+                    <h6 class="fw-semibold mb-2" style="color: var(--text-primary);">Colores</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                      {% for color in producto.get_colores() %}
+                      <span class="badge" style="background: var(--primary-color);">{{ color }}</span>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  {% endif %}
+                  
+                  {% if producto.tallas %}
+                  <div class="col-6">
+                    <h6 class="fw-semibold mb-2" style="color: var(--text-primary);">Tallas</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                      {% for talla in producto.get_tallas() %}
+                      <span class="badge" style="background: var(--success-color);">{{ talla }}</span>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% endif %}
+              
+              <div class="mt-auto">
+                <div class="alert border-0 rounded-3" style="background: var(--bg-tertiary);">
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-info-circle me-2" style="color: var(--primary-color);"></i>
+                    <small class="fw-semibold" style="color: var(--text-primary);">Para comprar este producto necesitas iniciar sesión</small>
+                  </div>
+                </div>
+                
+                <div class="d-grid gap-2">
+                  <a href="{{ url_for('auth.login') }}" class="btn btn-lg rounded-3 py-3" style="background: var(--primary-color); color: white; border: none;">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión para Comprar
+                  </a>
+                  <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-lg rounded-3 py-3">
+                    <i class="bi bi-person-plus me-2"></i>Crear Cuenta
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
 <!-- CTA SECTION -->
 <section class="container my-5">
-  <div class="card border-0 bg-gradient-primary text-white rounded-4 shadow-lg overflow-hidden">
+  <div class="card border-0 text-white rounded-4 shadow-lg overflow-hidden" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);">
     <div class="row align-items-center">
       <div class="col-lg-8 p-5">
-        <h3 class="fw-bold display-6 mb-3">¿Listo para renovar tu estilo?</h3>
-        <p class="lead mb-4">Únete a nuestra comunidad y descubre las mejores ofertas en moda.</p>
+        <h3 class="fw-bold display-6 mb-3">¿Listo para personalizar tus prendas?</h3>
+        <p class="lead mb-4">Únete a Texcort y descubre la calidad en bordados y prendas personalizadas.</p>
         <div class="d-flex gap-3 flex-wrap">
-          <a href="{{ url_for('auth.login') }}" class="btn btn-warning btn-lg px-4 py-2 rounded-pill">
+          <a href="{{ url_for('auth.login') }}" class="btn btn-lg px-4 py-3 rounded-pill" style="background: white; color: var(--primary-color); border: none;">
             <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
           </a>
-          <a href="{{ url_for('auth.register') }}" class="btn btn-outline-light btn-lg px-4 py-2 rounded-pill">
+          <a href="{{ url_for('auth.register') }}" class="btn btn-outline-light btn-lg px-4 py-3 rounded-pill">
             <i class="bi bi-person-plus me-2"></i>Registrarse
           </a>
         </div>
       </div>
       <div class="col-lg-4 text-center p-4">
-        <i class="bi bi-gem display-1 text-warning"></i>
+        <i class="bi bi-scissors display-1"></i>
       </div>
     </div>
   </div>
 </section>
 
 <style>
-.hero-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.bg-gradient-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.bg-gradient-secondary {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
 .category-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .category-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+  box-shadow: var(--shadow-lg) !important;
 }
 
 .product-card {
@@ -279,21 +561,27 @@
 
 .product-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,.15) !important;
+  box-shadow: var(--shadow-lg) !important;
 }
 
 .category-image-container {
   position: relative;
   overflow: hidden;
 }
-
-.category-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 100%);
-}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const productCards = document.querySelectorAll('.product-card');
+  productCards.forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateY(-5px)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+      this.style.transform = 'translateY(0)';
+    });
+  });
+});
+</script>
 {% endblock %}

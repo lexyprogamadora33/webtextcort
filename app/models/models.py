@@ -34,6 +34,7 @@ class Categoria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), unique=True, nullable=False)
     descripcion = db.Column(db.String(255))
+   
 
     productos = db.relationship('Producto', back_populates='categoria')
 
@@ -52,11 +53,36 @@ class Producto(db.Model):
     imagen = db.Column(db.String(255))
     destacado = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Nuevos campos para color y talla
+    colores = db.Column(db.String(500))  # Almacena colores como string separado por comas
+    tallas = db.Column(db.String(500))   # Almacena tallas como string separado por comas
 
     categoria_id = db.Column(db.Integer, db.ForeignKey('categorias.id'))
     categoria = db.relationship('Categoria', back_populates='productos')
 
     detalles = db.relationship('DetalleVenta', back_populates='producto')
+
+    # Métodos para manejar colores y tallas
+    def get_colores(self):
+        """Convierte el string de colores a lista"""
+        if self.colores:
+            return [color.strip() for color in self.colores.split(',')]
+        return []
+    
+    def set_colores(self, colores_list):
+        """Convierte lista de colores a string"""
+        self.colores = ','.join(colores_list)
+    
+    def get_tallas(self):
+        """Convierte el string de tallas a lista"""
+        if self.tallas:
+            return [talla.strip() for talla in self.tallas.split(',')]
+        return []
+    
+    def set_tallas(self, tallas_list):
+        """Convierte lista de tallas a string"""
+        self.tallas = ','.join(tallas_list)
 
 
 # ========================================
@@ -78,7 +104,7 @@ class Venta(db.Model):
 
 
 # ========================================
-# DETALLE DE VENTAS
+# DETALLE DE VENTAS (Modificado para incluir color y talla)
 # ========================================
 class DetalleVenta(db.Model):
     __tablename__ = 'detalle_ventas'
@@ -89,6 +115,10 @@ class DetalleVenta(db.Model):
     cantidad = db.Column(db.Integer, nullable=False)
     precio_unitario = db.Column(db.Float, nullable=False)
     subtotal = db.Column(db.Float, nullable=False)
+    
+    # Nuevos campos para registrar la selección del cliente
+    color_seleccionado = db.Column(db.String(50))
+    talla_seleccionada = db.Column(db.String(20))
 
     venta = db.relationship('Venta', back_populates='detalles')
     producto = db.relationship('Producto', back_populates='detalles')
